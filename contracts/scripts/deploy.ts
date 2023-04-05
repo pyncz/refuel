@@ -1,18 +1,23 @@
 import { ethers } from 'hardhat'
+import { config as dotEnvConfig } from 'dotenv'
+import { deployContract } from '../utils'
 
-async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000)
-  const unlockTime = currentTimestampInSeconds + 60
+dotEnvConfig({ debug: true })
 
-  const lockedAmount = ethers.utils.parseEther('0.001')
+const main = async () => {
+  const swapRouterAddress = process.env.SWAP_ROUTER_ADDRESS
+  if (!swapRouterAddress) {
+    throw new Error('"SWAP_ROUTER_ADDRESS" env var is not provided!')
+  }
 
-  const Lock = await ethers.getContractFactory('Lock')
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount })
-
-  await lock.deployed()
-
-  console.log(
-    `Lock with ${ethers.utils.formatEther(lockedAmount)}ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`,
+  await deployContract(
+    'Refuel',
+    ethers.getContractFactory('Refuel'),
+    swapRouterAddress,
+  )
+  await deployContract(
+    'RefuelResolver',
+    ethers.getContractFactory('RefuelResolver'),
   )
 }
 
