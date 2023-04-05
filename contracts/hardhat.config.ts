@@ -1,4 +1,6 @@
 import type { HardhatUserConfig } from 'hardhat/config'
+
+// Plugins
 import '@nomicfoundation/hardhat-toolbox'
 
 const config: HardhatUserConfig = {
