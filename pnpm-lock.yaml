@@ -44,6 +44,7 @@ importers:
       '@types/chai': ^4.2.0
       '@types/mocha': '>=9.1.0'
       '@types/node': '>=12.0.0'
+      '@uniswap/v3-core': ^1.0.1
       '@uniswap/v3-periphery': ^1.4.3
       chai: ^4.2.0
       dotenv: ^16.0.3
@@ -69,6 +70,7 @@ importers:
       '@types/chai': 4.3.4
       '@types/mocha': 10.0.1
       '@types/node': 18.15.11
+      '@uniswap/v3-core': 1.0.1
       '@uniswap/v3-periphery': 1.4.3
       chai: 4.3.7
       dotenv: 16.0.3
@@ -2359,6 +2361,11 @@ packages:
 
   /@uniswap/v3-core/1.0.0:
     resolution: {integrity: sha512-kSC4djMGKMHj7sLMYVnn61k9nu+lHjMIxgg9CDQT+s2QYLoA56GbSK9Oxr+qJXzzygbkrmuY6cwgP6cW2JXPFA==}
+    engines: {node: '>=10'}
+    dev: true
+
+  /@uniswap/v3-core/1.0.1:
+    resolution: {integrity: sha512-7pVk4hEm00j9tc71Y9+ssYpO6ytkeI0y7WE9P6UcmNzhxPePwyAxImuhVsTqWK9YFvzgtvzJHi64pBl4jUzKMQ==}
     engines: {node: '>=10'}
     dev: true
 
@@ -5429,6 +5436,18 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dev: true
+
+  /follow-redirects/1.15.2_debug@4.3.4:
+    resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dependencies:
+      debug: 4.3.4
     dev: true
 
   /for-each/0.3.3:
@@ -9865,7 +9884,7 @@ packages:
     dependencies:
       command-exists: 1.2.9
       commander: 3.0.2
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.4
       fs-extra: 0.30.0
       js-sha3: 0.8.0
       memorystream: 0.3.1

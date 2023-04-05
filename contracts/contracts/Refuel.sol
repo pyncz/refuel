@@ -42,6 +42,11 @@ contract Refuel is AnyTokenOperator, IRefuel {
         // - _account must approve this contract
         // - Let's assume we checked that the balance needs to be replenished via the resolver
 
+        require(
+            _sourceToken != _targetToken,
+            "Source and target tokens cannot be the same!"
+        );
+
         // Transfer the specified amount of the source token to this contract.
         TransferHelper.safeTransferFrom(
             _sourceToken,
@@ -72,7 +77,7 @@ contract Refuel is AnyTokenOperator, IRefuel {
         // Executes the swap returning the amountIn needed to spend to receive the desired amountOut.
         amountSpent = swapRouter.exactOutputSingle(params);
 
-        // For exact output swaps, the _sourceMaxAmount may not have all been spent.
+        // For exact output swaps, the _sourceAmountMax may not have all been spent.
         // If the actual amount spent (amountSpent) is less than the specified maximum amount, we must refund the _account and approve the swapRouter to spend 0.
         if (amountSpent < _sourceAmountMax) {
             // recall the rest of the approved amount
