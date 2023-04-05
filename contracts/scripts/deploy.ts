@@ -15,13 +15,13 @@ const main = async () => {
     ethers.getContractFactory('Refuel'),
     swapRouterAddress,
   )
-  setAppEnv('AUTOMATED_CONTRACT_ADDRESS', refuel.address)
+  setAppEnv('NUXT_AUTOMATED_CONTRACT_ADDRESS', refuel.address)
 
   const refuelResolver = await deployContract(
     'RefuelResolver',
     ethers.getContractFactory('RefuelResolver'),
   )
-  setAppEnv('RESOLVER_CONTRACT_ADDRESS', refuelResolver.address)
+  setAppEnv('NUXT_RESOLVER_CONTRACT_ADDRESS', refuelResolver.address)
 }
 
 main().catch((error) => {

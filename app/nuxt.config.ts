@@ -5,4 +5,11 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
   },
+
+  runtimeConfig: {
+    public: {
+      resolverContractAddress: '',
+      automatedContractAddress: '',
+    },
+  },
 })
