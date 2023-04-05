@@ -8,6 +8,14 @@
   ],
   "plugins":[],
   "rules":{
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "destructuredArrayIgnorePattern": "^_"
+      }
+    ],
+    "@typescript-eslint/space-before-function-paren": "off",
     "@typescript-eslint/array-type":[
       "error",
       {
