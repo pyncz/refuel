@@ -12,7 +12,7 @@ import "../AnyTokenOperator.sol";
  */
 abstract contract AutomateReady is AnyTokenOperator {
     IAutomate public immutable automate;
-    address private immutable _gelato;
+    address internal immutable _gelato;
 
     address private constant OPS_PROXY_FACTORY =
         0xC815dB16D4be6ddf2685C201937905aBf338F5D7;
@@ -24,29 +24,16 @@ abstract contract AutomateReady is AnyTokenOperator {
 
     /**
      * @dev
-     * Only tasks created by the provided _account
+     * Only tasks created by the provided _taskCreator
      * can call the functions with this modifier.
      */
-    modifier onlyDedicatedMsgSender(address _account) {
-        // Get who will be a sender for the tasks created by the user account
+    modifier onlyDedicatedMsgSender(address _taskCreator) {
+        // Get who will be a sender for the tasks created by the account
         (address dedicatedMsgSender, ) = IOpsProxyFactory(OPS_PROXY_FACTORY)
-            .getProxyOf(_account);
+            .getProxyOf(_taskCreator);
 
         require(msg.sender == dedicatedMsgSender, "Only dedicated msg.sender");
         _;
-    }
-
-    /**
-     * @dev
-     * Transfers fee to gelato for synchronous fee payments.
-     * _fee & _feeToken should be queried from IAutomate.getFeeDetails()
-     */
-    function _transferGelatoFee(uint256 _fee, address _feeToken) internal {
-        if (_isNative(_feeToken)) {
-            TransferHelper.safeTransferETH(_gelato, _fee);
-        } else {
-            TransferHelper.safeTransfer(_feeToken, _gelato, _fee);
-        }
     }
 
     function _getFeeDetails()

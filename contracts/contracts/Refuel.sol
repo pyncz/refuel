@@ -29,25 +29,68 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
         WETH = _wethAddress;
     }
 
-    /// @notice swapExactOutput swaps a minimum possible amount of the source token for a fixed amount of the target token.
+    /// @notice execute swaps a minimum possible amount of the source token for a fixed amount of the target token.
     /// @dev The calling address must approve this contract to spend at least `_amount` worth of the source token for this function to succeed.
-    /// @param _account Address of the user account. We don't use msg.sender as sender will be the gelato automation contract
+    /// @param _recipient Address of the user account. We don't use msg.sender as sender will be the gelato automation contract
     /// @param _sourceToken The address of the source token
     /// @param _sourceAmountMax Max amount of the source token to exchange
     /// @param _targetToken The address of the target token
     /// @param _targetAmount The exact amount of the target token to receive
     /// @return amountSpent The amount of the source token spent
-    function swapExactOutput(
-        address _account,
+    function execute(
+        address _recipient,
         address _sourceToken,
         uint256 _sourceAmountMax,
         address _targetToken,
         uint256 _targetAmount
-    ) external onlyDedicatedMsgSender(_account) returns (uint256 amountSpent) {
+    )
+        external
+        onlyDedicatedMsgSender(_recipient)
+        returns (uint256 amountSpent)
+    {
         // NOTE:
-        // - _account must approve this contract
+        // - _recipient must approve this contract
         // - Let's assume we checked that the balance needs to be replenished via the resolver
 
+        /**
+         * Perform the actual swap
+         */
+        uint256 amountSpentOnSwap = swapExactOutput(
+            _recipient,
+            _recipient,
+            _sourceToken,
+            _sourceAmountMax,
+            _targetToken,
+            _targetAmount
+        );
+
+        /**
+         * Pay gelato for automation
+         */
+        // NOTE: Only native network token is available for now
+        // @see https://docs.gelato.network/developer-services/automate/paying-for-your-transactions
+        (uint256 gelatoFee, address gelatoFeeToken) = _getFeeDetails();
+
+        uint256 amountSpentOnGelatoFee = swapExactOutput(
+            _recipient,
+            _gelato,
+            _sourceToken,
+            _sourceAmountMax,
+            gelatoFeeToken,
+            gelatoFee
+        );
+
+        amountSpent = amountSpentOnSwap + amountSpentOnGelatoFee;
+    }
+
+    function swapExactOutput(
+        address _sponsor,
+        address _recipient,
+        address _sourceToken,
+        uint256 _sourceAmountMax,
+        address _targetToken,
+        uint256 _targetAmount
+    ) internal returns (uint256 amountSpent) {
         // Cannot accept the native token as the source because the approval
         // by the end user is required, which is not possible for native tokens.
         require(
@@ -60,10 +103,10 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
             "Source and target tokens cannot be the same!"
         );
 
-        // Transfer the specified amount of the source token to this contract.
+        // Transfer the max amount of the source token from _sponsor to this contract.
         TransferHelper.safeTransferFrom(
             _sourceToken,
-            _account,
+            _sponsor,
             address(this),
             _sourceAmountMax
         );
@@ -81,8 +124,8 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
         bool isTargetNative = _isNative(_targetToken);
         // - Use WETH, and then unwrap
         address targetTokenAddress = isTargetNative ? WETH : _targetToken;
-        // - Use this contract as a recipient first to re-transfer unwrapped to the target account afterwards
-        address recipientAddress = isTargetNative ? address(this) : _account;
+        // - Use this contract as a recipient first to re-transfer unwrapped to the target _recipient afterwards
+        address recipientAddress = isTargetNative ? address(this) : _recipient;
 
         ISwapRouter.ExactOutputSingleParams memory params = ISwapRouter
             .ExactOutputSingleParams({
@@ -104,25 +147,21 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
         if (isTargetNative) {
             // - unwrap received amount of the wrapped native token
             IWETH(WETH).withdraw(_targetAmount);
-            // - re-transfer unwrapped native token to the target account
-            TransferHelper.safeTransferETH(_account, _targetAmount);
+            // - re-transfer unwrapped native token to the target _recipient
+            TransferHelper.safeTransferETH(_recipient, _targetAmount);
         }
 
         // For exact output swaps, the _sourceAmountMax may not have all been spent.
-        // If the actual amount spent (amountSpent) is less than the specified maximum amount, we must refund the _account and approve the swapRouter to spend 0.
+        // If the actual amount spent (amountSpent) is less than the specified maximum amount, we must refund the _sponsor and approve the swapRouter to spend 0.
         if (amountSpent < _sourceAmountMax) {
             // recall the rest of the approved amount
             TransferHelper.safeApprove(_sourceToken, address(swapRouter), 0);
             // refund
             TransferHelper.safeTransfer(
                 _sourceToken,
-                _account,
+                _sponsor,
                 _sourceAmountMax - amountSpent
             );
         }
-
-        // Pay gelato for automation
-        (uint256 fee, address feeToken) = _getFeeDetails();
-        _transferGelatoFee(fee, feeToken);
     }
 }
