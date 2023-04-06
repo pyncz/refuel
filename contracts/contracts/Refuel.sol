@@ -6,22 +6,27 @@ import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 
 import "./utils/AnyTokenOperator.sol";
+import "./utils/gelato/AutomateReady.sol";
 import "./utils/IRefuel.sol";
 import "./utils/IWETH.sol";
 
-contract Refuel is IRefuel, AnyTokenOperator {
+contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
     address payable public owner;
 
-    address public immutable WETH9;
+    address public immutable WETH;
     ISwapRouter public immutable swapRouter;
 
     // 500 (0.05%) / 3000 (0.3%) / 10000 (1%)
     uint24 public constant poolFee = 3000;
 
-    constructor(ISwapRouter _swapRouter, address _wethAddress) {
+    constructor(
+        ISwapRouter _swapRouter,
+        address _automate,
+        address _wethAddress
+    ) AutomateReady(_automate) {
         owner = payable(msg.sender);
         swapRouter = _swapRouter;
-        WETH9 = _wethAddress;
+        WETH = _wethAddress;
     }
 
     /// @notice swapExactOutput swaps a minimum possible amount of the source token for a fixed amount of the target token.
@@ -38,7 +43,7 @@ contract Refuel is IRefuel, AnyTokenOperator {
         uint256 _sourceAmountMax,
         address _targetToken,
         uint256 _targetAmount
-    ) external returns (uint256 amountSpent) {
+    ) external onlyDedicatedMsgSender(_account) returns (uint256 amountSpent) {
         // NOTE:
         // - _account must approve this contract
         // - Let's assume we checked that the balance needs to be replenished via the resolver
@@ -75,7 +80,7 @@ contract Refuel is IRefuel, AnyTokenOperator {
          */
         bool isTargetNative = _isNative(_targetToken);
         // - Use WETH, and then unwrap
-        address targetTokenAddress = isTargetNative ? WETH9 : _targetToken;
+        address targetTokenAddress = isTargetNative ? WETH : _targetToken;
         // - Use this contract as a recipient first to re-transfer unwrapped to the target account afterwards
         address recipientAddress = isTargetNative ? address(this) : _account;
 
@@ -98,7 +103,7 @@ contract Refuel is IRefuel, AnyTokenOperator {
         // If it's a swap into a native token...
         if (isTargetNative) {
             // - unwrap received amount of the wrapped native token
-            IWETH(WETH9).withdraw(_targetAmount);
+            IWETH(WETH).withdraw(_targetAmount);
             // - re-transfer unwrapped native token to the target account
             TransferHelper.safeTransferETH(_account, _targetAmount);
         }
@@ -115,5 +120,9 @@ contract Refuel is IRefuel, AnyTokenOperator {
                 _sourceAmountMax - amountSpent
             );
         }
+
+        // Pay gelato for automation
+        (uint256 fee, address feeToken) = _getFeeDetails();
+        _transferGelatoFee(fee, feeToken);
     }
 }

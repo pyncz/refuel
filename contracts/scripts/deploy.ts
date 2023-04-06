@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import hre, { ethers } from 'hardhat'
-import { deployContract, getWethAddress, setAppEnv, validateEnv } from '../utils'
+import { deployContract, getGelatoAutomateAddress, getWethAddress, setAppEnv, validateEnv } from '../utils'
 
 const main = async () => {
   const networkName = hre.network.name
@@ -14,6 +14,12 @@ const main = async () => {
   const wethAddress = getWethAddress(networkName)
   console.log(`WETH address is ${wethAddress}`)
 
+  const automateAddress = getGelatoAutomateAddress(networkName)
+  console.log(`Gelato Automate address is ${automateAddress}`)
+
+  /**
+   * Actually, deploy
+   */
   const [deployer] = await ethers.getSigners()
   console.log('Deploying contracts with the account:', deployer.address)
   // Log the balance before deploying
@@ -23,6 +29,7 @@ const main = async () => {
     'Refuel',
     ethers.getContractFactory('Refuel'),
     swapRouterAddress,
+    automateAddress,
     wethAddress,
   )
   setAppEnv('NUXT_AUTOMATED_CONTRACT_ADDRESS', refuel.address)
