@@ -75,7 +75,8 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
             _recipient,
             _gelato,
             _sourceToken,
-            _sourceAmountMax,
+            // Remainder of the max allowed balance to spend after the main swap
+            _sourceAmountMax - amountSpentOnSwap,
             gelatoFeeToken,
             gelatoFee
         );
