@@ -1,6 +1,10 @@
 # @pyncz/refuel
 ⛽ Don't let your account run out of fuel
 
+> **Warning**
+>
+> This is my sandbox project to try out Gelato (and Uniswap v3, along the way). Don't take it seriously.
+
 ![refuel cover](./.github/cover.jpg)
 
 ---
@@ -36,4 +40,4 @@ User sees all their tasks and can cancel / add another one at any time.
 
 > **Note** Conditions of the task's execution are resolved by the [`RefuelResolver`](./contracts/contracts/RefuelResolver.sol) contract.
 
-> **Note** Swap is provided by the [`Refuel`](./contracts/contracts/Refuel.sol) contract. Gelato automation contract is the only who allowed to exec its `swapExactOutput` method.
+> **Note** Swap is provided by the [`Refuel`](./contracts/contracts/Refuel.sol) contract. Gelato automation contract is the only who allowed to exec its `execute` method.
