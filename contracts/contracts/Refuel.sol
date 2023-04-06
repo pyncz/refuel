@@ -7,29 +7,30 @@ import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 
 import "./utils/AnyTokenOperator.sol";
 import "./utils/IRefuel.sol";
+import "./utils/IWETH.sol";
 
-contract Refuel is AnyTokenOperator, IRefuel {
+contract Refuel is IRefuel, AnyTokenOperator {
     address payable public owner;
+
+    address public immutable WETH9;
     ISwapRouter public immutable swapRouter;
 
     // 500 (0.05%) / 3000 (0.3%) / 10000 (1%)
     uint24 public constant poolFee = 3000;
 
-    constructor(ISwapRouter _swapRouter) payable {
+    constructor(ISwapRouter _swapRouter, address _wethAddress) {
         owner = payable(msg.sender);
         swapRouter = _swapRouter;
+        WETH9 = _wethAddress;
     }
 
-    /// @notice swapExactOutputSingle swaps a minimum possible amount of DAI for a fixed amount of WETH.
-    /// using the DAI/WETH9 0.3% pool by calling `exactInputSingle` in the swap router.
+    /// @notice swapExactOutput swaps a minimum possible amount of the source token for a fixed amount of the target token.
     /// @dev The calling address must approve this contract to spend at least `_amount` worth of the source token for this function to succeed.
-    //
     /// @param _account Address of the user account. We don't use msg.sender as sender will be the gelato automation contract
     /// @param _sourceToken The address of the source token
     /// @param _sourceAmountMax Max amount of the source token to exchange
     /// @param _targetToken The address of the target token
     /// @param _targetAmount The exact amount of the target token to receive
-    //
     /// @return amountSpent The amount of the source token spent
     function swapExactOutput(
         address _account,
@@ -41,6 +42,13 @@ contract Refuel is AnyTokenOperator, IRefuel {
         // NOTE:
         // - _account must approve this contract
         // - Let's assume we checked that the balance needs to be replenished via the resolver
+
+        // Cannot accept the native token as the source because the approval
+        // by the end user is required, which is not possible for native tokens.
+        require(
+            !_isNative(_sourceToken),
+            "The native token cannot be the source token!"
+        );
 
         require(
             _sourceToken != _targetToken,
@@ -62,20 +70,38 @@ contract Refuel is AnyTokenOperator, IRefuel {
             _sourceAmountMax
         );
 
+        /**
+         * If it's a swap into a native token...
+         */
+        bool isTargetNative = _isNative(_targetToken);
+        // - Use WETH, and then unwrap
+        address targetTokenAddress = isTargetNative ? WETH9 : _targetToken;
+        // - Use this contract as a recipient first to re-transfer unwrapped to the target account afterwards
+        address recipientAddress = isTargetNative ? address(this) : _account;
+
         ISwapRouter.ExactOutputSingleParams memory params = ISwapRouter
             .ExactOutputSingleParams({
                 tokenIn: _sourceToken,
-                tokenOut: _targetToken,
+                tokenOut: targetTokenAddress,
                 fee: poolFee,
-                recipient: _account,
+                recipient: recipientAddress,
                 deadline: block.timestamp,
                 amountOut: _targetAmount,
                 amountInMaximum: _sourceAmountMax,
                 sqrtPriceLimitX96: 0
             });
 
-        // Executes the swap returning the amountIn needed to spend to receive the desired amountOut.
+        // Executes the swap returning the amountSpent needed to exchange
+        // in order to receive the desired _targetAmount.
         amountSpent = swapRouter.exactOutputSingle(params);
+
+        // If it's a swap into a native token...
+        if (isTargetNative) {
+            // - unwrap received amount of the wrapped native token
+            IWETH(WETH9).withdraw(_targetAmount);
+            // - re-transfer unwrapped native token to the target account
+            TransferHelper.safeTransferETH(_account, _targetAmount);
+        }
 
         // For exact output swaps, the _sourceAmountMax may not have all been spent.
         // If the actual amount spent (amountSpent) is less than the specified maximum amount, we must refund the _account and approve the swapRouter to spend 0.

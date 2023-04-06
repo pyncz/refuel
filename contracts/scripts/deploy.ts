@@ -1,19 +1,29 @@
-import { ethers } from 'hardhat'
-import { config as dotEnvConfig } from 'dotenv'
-import { deployContract, setAppEnv } from '../utils'
-
-dotEnvConfig({ debug: true })
+/* eslint-disable no-console */
+import hre, { ethers } from 'hardhat'
+import { deployContract, getWethAddress, setAppEnv, validateEnv } from '../utils'
 
 const main = async () => {
-  const swapRouterAddress = process.env.SWAP_ROUTER_ADDRESS
-  if (!swapRouterAddress) {
-    throw new Error('"SWAP_ROUTER_ADDRESS" env var is not provided!')
-  }
+  const networkName = hre.network.name
+
+  // Log current network
+  console.log(`Deploying on ${networkName}...`)
+
+  const swapRouterAddress = validateEnv('SWAP_ROUTER_ADDRESS', process.env.SWAP_ROUTER_ADDRESS)
+  console.log(`SwapRouter address is ${swapRouterAddress}`)
+
+  const wethAddress = getWethAddress(networkName)
+  console.log(`WETH address is ${wethAddress}`)
+
+  const [deployer] = await ethers.getSigners()
+  console.log('Deploying contracts with the account:', deployer.address)
+  // Log the balance before deploying
+  console.log('Deployer account balance:', (await deployer.getBalance()).toString())
 
   const refuel = await deployContract(
     'Refuel',
     ethers.getContractFactory('Refuel'),
     swapRouterAddress,
+    wethAddress,
   )
   setAppEnv('NUXT_AUTOMATED_CONTRACT_ADDRESS', refuel.address)
 
@@ -22,6 +32,9 @@ const main = async () => {
     ethers.getContractFactory('RefuelResolver'),
   )
   setAppEnv('NUXT_RESOLVER_CONTRACT_ADDRESS', refuelResolver.address)
+
+  // Log the balance after deploying
+  console.log('Deployer account balance:', (await deployer.getBalance()).toString())
 }
 
 main().catch((error) => {
