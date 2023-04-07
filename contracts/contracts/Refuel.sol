@@ -4,6 +4,7 @@ pragma abicoder v2;
 
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "./utils/AnyTokenOperator.sol";
 import "./utils/gelato/AutomateReady.sol";
@@ -104,19 +105,28 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
             "Source and target tokens cannot be the same!"
         );
 
+        // Use the whole balance as max amount if it's not specified explicitly
+        // (unused amount will be refunded anyway)
+        uint256 sourceTokenBalance = IERC20(_sourceToken).balanceOf(_sponsor);
+        uint256 sourceAmountMax = _sourceAmountMax > 0
+            ? _sourceAmountMax > sourceTokenBalance
+                ? sourceTokenBalance
+                : _sourceAmountMax
+            : sourceTokenBalance;
+
         // Transfer the max amount of the source token from _sponsor to this contract.
         TransferHelper.safeTransferFrom(
             _sourceToken,
             _sponsor,
             address(this),
-            _sourceAmountMax
+            sourceAmountMax
         );
 
         // Approve the router to spend the received amount of the source token
         TransferHelper.safeApprove(
             _sourceToken,
             address(swapRouter),
-            _sourceAmountMax
+            sourceAmountMax
         );
 
         /**
@@ -136,7 +146,7 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
                 recipient: recipientAddress,
                 deadline: block.timestamp,
                 amountOut: _targetAmount,
-                amountInMaximum: _sourceAmountMax,
+                amountInMaximum: sourceAmountMax,
                 sqrtPriceLimitX96: 0
             });
 
@@ -152,16 +162,16 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
             TransferHelper.safeTransferETH(_recipient, _targetAmount);
         }
 
-        // For exact output swaps, the _sourceAmountMax may not have all been spent.
+        // For exact output swaps, the sourceAmountMax may not have all been spent.
         // If the actual amount spent (amountSpent) is less than the specified maximum amount, we must refund the _sponsor and approve the swapRouter to spend 0.
-        if (amountSpent < _sourceAmountMax) {
+        if (amountSpent < sourceAmountMax) {
             // recall the rest of the approved amount
             TransferHelper.safeApprove(_sourceToken, address(swapRouter), 0);
             // refund
             TransferHelper.safeTransfer(
                 _sourceToken,
                 _sponsor,
-                _sourceAmountMax - amountSpent
+                sourceAmountMax - amountSpent
             );
         }
     }
