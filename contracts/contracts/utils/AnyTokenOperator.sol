@@ -9,12 +9,12 @@ abstract contract AnyTokenOperator {
 
     function _checkBalance(
         address _token,
-        address _account
+        address _holder
     ) internal view returns (uint256 balance, bool isNative) {
         if (_token == NATIVE) {
-            return (_account.balance, true);
+            return (_holder.balance, true);
         } else {
-            return (IERC20(_token).balanceOf(_account), false);
+            return (IERC20(_token).balanceOf(_holder), false);
         }
     }
 

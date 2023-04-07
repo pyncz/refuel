@@ -53,6 +53,12 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
         // - _recipient must approve this contract
         // - Let's assume we checked that the balance needs to be replenished via the resolver
 
+        uint256 sourceAmountMax = _getAvailableAmount(
+            _recipient,
+            _sourceToken,
+            _sourceAmountMax
+        );
+
         /**
          * Perform the actual swap
          */
@@ -60,7 +66,7 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
             _recipient,
             _recipient,
             _sourceToken,
-            _sourceAmountMax,
+            sourceAmountMax,
             _targetToken,
             _targetAmount
         );
@@ -77,7 +83,7 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
             _gelato,
             _sourceToken,
             // Remainder of the max allowed balance to spend after the main swap
-            _sourceAmountMax - amountSpentOnSwap,
+            sourceAmountMax - amountSpentOnSwap,
             gelatoFeeToken,
             gelatoFee
         );
@@ -105,14 +111,18 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
             "Source and target tokens cannot be the same!"
         );
 
-        // Use the whole balance as max amount if it's not specified explicitly
+        // Use the whole balance as the max amount if it's not specified explicitly
         // (unused amount will be refunded anyway)
-        uint256 sourceTokenBalance = IERC20(_sourceToken).balanceOf(_sponsor);
-        uint256 sourceAmountMax = _sourceAmountMax > 0
-            ? _sourceAmountMax > sourceTokenBalance
-                ? sourceTokenBalance
-                : _sourceAmountMax
-            : sourceTokenBalance;
+        uint256 sourceAmountMax = _getAvailableAmount(
+            _sponsor,
+            _sourceToken,
+            _sourceAmountMax
+        );
+
+        require(
+            sourceAmountMax > 0,
+            "Balance of the source token should be more than 0!"
+        );
 
         // Transfer the max amount of the source token from _sponsor to this contract.
         TransferHelper.safeTransferFrom(
@@ -174,5 +184,16 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
                 sourceAmountMax - amountSpent
             );
         }
+    }
+
+    function _getAvailableAmount(
+        address _holder,
+        address _token,
+        uint256 _maxAmount
+    ) internal view returns (uint256 availableAmount) {
+        uint256 tokenBalance = IERC20(_token).balanceOf(_holder);
+        availableAmount = _maxAmount > 0 && _maxAmount < tokenBalance
+            ? _maxAmount
+            : tokenBalance;
     }
 }
