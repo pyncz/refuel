@@ -1,6 +1,6 @@
 import { config as dotEnvConfig } from 'dotenv'
 import type { HardhatUserConfig } from 'hardhat/config'
-import { validateEnv } from './utils'
+import { requireEnv } from '../utils'
 
 // Plugins
 import '@nomicfoundation/hardhat-toolbox'
@@ -9,9 +9,9 @@ import '@nomicfoundation/hardhat-toolbox'
 // - load common vars
 dotEnvConfig({ debug: true })
 
-const deployer = validateEnv('DEPLOYER_PRIVATE_KEY', process.env.DEPLOYER_PRIVATE_KEY)
-const goerliRpcUrl = validateEnv('GOERLI_RPC_URL', process.env.GOERLI_RPC_URL)
-const mainnetRpcUrl = validateEnv('MAINNET_RPC_URL', process.env.MAINNET_RPC_URL)
+const deployer = requireEnv('DEPLOYER_PRIVATE_KEY', process.env.DEPLOYER_PRIVATE_KEY)
+const goerliRpcUrl = requireEnv('GOERLI_RPC_URL', process.env.GOERLI_RPC_URL)
+const mainnetRpcUrl = requireEnv('MAINNET_RPC_URL', process.env.MAINNET_RPC_URL)
 
 const config: HardhatUserConfig = {
   solidity: '0.8.18',

@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import hre, { ethers } from 'hardhat'
-import { deployContract, getGelatoAutomateAddress, getWethAddress, setAppEnv, validateEnv } from '../utils'
+import { deployContract, getGelatoAutomateAddress, getWethAddress, setAppEnv } from '../utils'
+import { requireEnv } from '../../utils'
 
 const main = async () => {
   const networkName = hre.network.name
@@ -8,7 +9,7 @@ const main = async () => {
   // Log current network
   console.log(`Deploying on ${networkName}...`)
 
-  const swapRouterAddress = validateEnv('SWAP_ROUTER_ADDRESS', process.env.SWAP_ROUTER_ADDRESS)
+  const swapRouterAddress = requireEnv('SWAP_ROUTER_ADDRESS', process.env.SWAP_ROUTER_ADDRESS)
   console.log(`SwapRouter address is ${swapRouterAddress}`)
 
   const wethAddress = getWethAddress(networkName)

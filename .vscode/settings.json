@@ -7,4 +7,11 @@
   "files.associations": {
     ".env.template": "properties"
   },
+  "i18n-ally.enabledFrameworks": [
+    "vue"
+  ],
+  "i18n-ally.localesPaths": "./app/locales",
+  "i18n-ally.keysInUse": [
+    "validations.*",
+  ],
 }

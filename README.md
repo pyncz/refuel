@@ -1,4 +1,4 @@
-# @pyncz/refuel
+# refuel
 ⛽ Don't let your account run out of fuel
 
 > **Warning**

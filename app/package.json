@@ -9,15 +9,27 @@
   },
   "dependencies": {
     "@gelatonetwork/automate-sdk": "^2.1.1",
+    "@headlessui/tailwindcss": "^0.1.2",
+    "@headlessui/vue": "^1.7.12",
+    "@nuxtjs/i18n-edge": "^8.0.0-beta.9-27948515.3db6367",
     "@pinia/nuxt": "^0.4.7",
+    "@vuelidate/core": "^2.0.2",
+    "@vuelidate/validators": "^2.0.2",
     "@vueuse/nuxt": "^9.13.0",
     "@walletconnect/sign-client": "^2.6.2",
     "@walletconnect/universal-provider": "^2.6.2",
     "@web3modal/standalone": "^2.2.2",
+    "autoprefixer": "^10.4.14",
     "ethers": "^5.4.7",
+    "nuxt-icon": "^0.3.3",
+    "pinia": "^2.0.34",
+    "postcss": "^8.4.21",
+    "sass": "^1.61.0",
+    "tailwindcss": "^3.3.0",
     "typescript": "^4.9.5"
   },
   "devDependencies": {
+    "@vue-macros/nuxt": "^1.2.8",
     "@walletconnect/types": "^2.6.2",
     "nuxt": "^3.3.2"
   }
