@@ -16,6 +16,9 @@
   small {
     @apply tw-text-sm;
   }
+  a {
+    @apply tw-cursor-pointer;
+  }
   input[type=number]::-webkit-inner-spin-button {
     -webkit-appearance: none;
   }
