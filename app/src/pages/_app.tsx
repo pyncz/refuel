@@ -1,17 +1,13 @@
 import type { AppProps, AppType } from 'next/app'
-import Link from 'next/link'
-import Image from 'next/image'
-import { appWithTranslation, useTranslation } from 'next-i18next'
-import localFont from '@next/font/local'
-import { WagmiConfig, useAccount, useDisconnect, useEnsAvatar, useEnsName } from 'wagmi'
-import { useEffect, useMemo } from 'react'
-import { Icon } from '@iconify-icon/react'
-import walletIcon from '@iconify/icons-ion/wallet-outline'
-import logo from '../assets/img/logo.png'
+import { appWithTranslation } from 'next-i18next'
+import localFont from 'next/font/local'
+import { WagmiConfig } from 'wagmi'
+import { useEffect } from 'react'
 
-import { formatAddress, setupWeb3Client } from '../utils'
+import { setupWeb3Client } from '../utils'
 
-import '../assets/styles/main.scss'
+import '../assets/styles/globals.scss'
+import { ConnectionStatus, LogoLink } from '../components'
 
 // Optimize fonts
 const Manrope = localFont({
@@ -55,61 +51,19 @@ const DMMono = localFont({
 const fonts = [Manrope, OpenSans, DMMono]
 
 const App: AppType = ({ Component, pageProps }: AppProps) => {
-  const { i18n } = useTranslation()
-
-  const { address, connector, isConnected } = useAccount()
-  const { data: ensAvatar } = useEnsAvatar({ address })
-  const { data: ensName } = useEnsName({ address })
-  const { disconnect } = useDisconnect()
-
-  const formattedAddress = useMemo(() => address
-    ? formatAddress(address)
-    : address,
-  [address])
-
   useEffect(() => {
     const root = document.getElementsByTagName('html')[0]!
     root.classList.add(...fonts.map(font => font.variable))
   }, [])
 
+  const client = setupWeb3Client()
+
   return (
-    <WagmiConfig client={setupWeb3Client()}>
+    <WagmiConfig client={client}>
       <main className="tw-container tw-py-12 tw-min-h-screen tw-flex tw-flex-col tw-gap-4">
         <div className="tw-flex-center-y tw-flex-col tw-justify-between sm:tw-flex-row">
-          <Link href="/">
-            <Image
-              src={logo}
-              alt={i18n.t('logo', { name: 'refuel' })}
-              className="tw--ml-1.5 tw-h-8 tw-w-auto"
-            />
-          </Link>
-
-          {isConnected && formattedAddress && connector
-            ? (
-              <div className="tw-bg-dim-1 tw-rounded-sm tw-px-2 tw-py-1 tw-inline-flex tw-items-center tw-gap-2">
-                <div className="tw-relative tw-circle-12 tw-bg-dim-2">
-                  {ensAvatar
-                    ? <Image src={ensAvatar} alt="ENS Avatar" fill />
-                    : <Icon icon={walletIcon} className="tw-size-8 tw-text-dim-2" />
-                  }
-                </div>
-                <div>
-
-                </div>
-                <div>{ensName ? `${ensName} (${address})` : address}</div>
-                <div>Connected to {connector.name}</div>
-                <div className="tw-font-mono">
-                  <div>{formattedAddress}</div>
-                  <div>Connected to {connector.name}</div>
-                </div>
-
-                <button onClick={() => disconnect()}>
-                  Disconnect
-                </button>
-              </div>
-              )
-            : null
-          }
+          <LogoLink />
+          <ConnectionStatus />
         </div>
 
         <div className="tw-flex-1 tw-flex-center tw-flex-col tw-gap-4">

@@ -29,7 +29,7 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = () => {
   const { isConnected } = useAccount()
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect()
 
-  const [chainId, setChainId] = useState(chains[0]!.id)
+  const [chainId, setChainId] = useState(chains[0]?.id)
 
   const { switchNetwork, isLoading: isSwitchingNetwork } = useSwitchNetwork({
     onSuccess(selectedChain) {
@@ -63,7 +63,7 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = () => {
         description={i18n.t('pages.index.description')}
       />
 
-      <div className="tw-space-y-4 tw-rounded-xl tw-bg-dim-1 tw-p-6 tw-mx-auto tw-max-w-md">
+      <div className="tw-space-y-4 tw-rounded-xl tw-bg-dim-1 tw-p-6 tw-mx-auto tw-w-full tw-max-w-md">
         <Select
           value={chainId?.toString()}
           options={chains}

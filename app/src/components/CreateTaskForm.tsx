@@ -10,7 +10,7 @@ import { address, intLike } from '../models'
 import { Button, ControlledField, ErrorMessage, Input } from './lib'
 
 interface Props {
-  chainId: number
+  chainId?: number
   onSubmit?: (form: AutomationForm) => void
 }
 

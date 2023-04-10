@@ -1,6 +1,6 @@
 // @ts-check
+import { isAddress } from 'ethers/lib/utils.js'
 import { z } from 'zod'
-import { address } from '../models'
 
 /**
  * Specify your server-side environment variables schema here.
@@ -17,8 +17,8 @@ export const serverSchema = z.object({
  */
 export const clientSchema = z.object({
   // NEXT_PUBLIC_ client vars
-  NEXT_PUBLIC_RESOLVER_CONTRACT_ADDRESS: address,
-  NEXT_PUBLIC_AUTOMATED_CONTRACT_ADDRESS: address,
+  NEXT_PUBLIC_RESOLVER_CONTRACT_ADDRESS: z.string().refine(isAddress),
+  NEXT_PUBLIC_AUTOMATED_CONTRACT_ADDRESS: z.string().refine(isAddress),
   NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: z.string(),
   NEXT_PUBLIC_WALLETCONNECT_RELAY_URL: z.string(),
   NEXT_PUBLIC_ALCHEMY_ID: z.string(),

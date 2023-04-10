@@ -1,8 +1,8 @@
-@use 'themes';
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import 'themes';
 
 @layer base {
   html {
@@ -33,6 +33,6 @@
     --accent-primary: 233, 14, 241;
     --accent-secondary: 50, 205, 192;
 
-    @include themes.dark-mode;
+    @include dark-mode;
   }
 }
