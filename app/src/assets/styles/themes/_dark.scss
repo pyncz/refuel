@@ -1,0 +1,45 @@
+@mixin dark-mode {
+  /* text */
+  --color-base: 250, 250, 254;
+  --color-dim-1: 220, 220, 225;
+  --color-dim-2: 170, 170, 176;
+  --color-dim-3: 90, 90, 97;
+  
+  /* bg */
+  --bg-base: 8, 8, 15;
+  --bg-dim-1: 24, 24, 31;
+  --bg-dim-2: 32, 32, 39;
+  --bg-dim-3: 48, 48, 55;
+
+  /* border */
+  --border-base: 70, 70, 77;
+  --border-dim-1: 60, 60, 66;
+  --border-dim-2: 50, 50, 55;
+  --border-dim-3: 40, 40, 44;
+
+  /* State */
+  --state-error: 255, 129, 143;
+
+  /* UI */
+  // button
+  --button-primary-bg: var(--accent-primary);
+  --button-primary-bg-vivid: var(--accent-primary-vivid);
+  --button-primary-color: var(--white);
+  --button-primary-color-vivid: var(--white);
+  --button-secondary-bg: var(--bg-dim-2);
+  --button-secondary-bg-vivid: var(--bg-dim-3);
+  --button-secondary-color: var(--white);
+  --button-secondary-color-vivid: var(--white);
+  // input
+  --input-bg: var(--bg-dim-2);
+  --input-text: var(--color-dim-1);
+  --input-border: var(--border-dim-2);
+  --input-border--hover: var(--border-dim-1);
+  --input-border--focus: var(--accent-primary);
+  --input-placeholder: var(--color-dim-2);
+  --input-readonly-text: var(--color-dim-2);
+  --input-disabled-bg: var(--bg-dim-1);
+  --input-disabled-text: var(--color-dim-2);
+  --input-disabled-border: var(--border-dim-3);
+  --input-disabled-placeholder: var(--color-dim-3);
+}

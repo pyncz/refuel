@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-const APP_ENV_PATH = path.resolve(__dirname, '../../app/.env')
+const APP_ENV_PATH = path.resolve(__dirname, '../../app/.env.local')
 
 export const setAppEnv = (key: string, value: string) => {
   let appEnv = fs.readFileSync(APP_ENV_PATH, 'utf-8')

@@ -33,13 +33,13 @@ const main = async () => {
     automateAddress,
     wethAddress,
   )
-  setAppEnv('AUTOMATED_CONTRACT_ADDRESS', refuel.address)
+  setAppEnv('NEXT_PUBLIC_AUTOMATED_CONTRACT_ADDRESS', refuel.address)
 
   const refuelResolver = await deployContract(
     'RefuelResolver',
     ethers.getContractFactory('RefuelResolver'),
   )
-  setAppEnv('RESOLVER_CONTRACT_ADDRESS', refuelResolver.address)
+  setAppEnv('NEXT_PUBLIC_RESOLVER_CONTRACT_ADDRESS', refuelResolver.address)
 
   // Log the balance after deploying
   console.log('Deployer account balance:', (await deployer.getBalance()).toString())

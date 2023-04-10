@@ -1,0 +1,45 @@
+{
+  "address": "Address",
+  "amount": "Amount",
+  "chain": "Chain",
+  "chainName": "{{name}} Chain",
+  "createTask": "Create task",
+  "errors": {
+    "notErc20": "Not an ERC20 contract address!",
+    "notFound": "Not found"
+  },
+  "form": {
+    "replenishmentAmount": {
+      "description": "If you have enough amount in the source token, you can set bigger replenishment amount in order to submit transactions less frequently, hence pay less for gas.",
+      "label": "Replenishment amount",
+      "placeholder": "$t(amount)"
+    },
+    "sourceTokenAddress": {
+      "description": "The balance will be replenished by swapping this token.",
+      "label": "Source token",
+      "placeholder": "$t(address)"
+    },
+    "threshold": {
+      "description": "The minimum balance of the token you will have. When the balance gets less than this value it will be replenished by swapping the source token.",
+      "label": "Minimum balance",
+      "placeholder": "$t(amount)"
+    },
+    "watchedTokenAddress": {
+      "description": "Your balance of this token will be watched and replenished when it's about to run out.",
+      "label": "Token to replenish",
+      "placeholder": "$t(address)"
+    }
+  },
+  "logo": "{{name}} logo",
+  "pages": {
+    "index": {
+      "description": "Don't let your account run out of fuel! Replenish your crypto assets' balance automatically by swapping ERC20 token of your choice",
+      "title": "refuel"
+    }
+  },
+  "status": {
+    "initialized": "WalletConnect Sign Client is initialized!",
+    "initializing": "Initializing WalletConnect Sign Client...",
+    "waiting": "WalletConnect Sign Client is not initialized"
+  }
+}

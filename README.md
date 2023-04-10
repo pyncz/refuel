@@ -5,7 +5,7 @@
 >
 > This is my sandbox project to try out Gelato (and Uniswap v3, along the way). Don't take it seriously.
 
-![refuel cover](./.github/cover.jpg)
+![refuel cover](./app/public/img/cover.jpg)
 
 ---
 

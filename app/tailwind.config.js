@@ -1,32 +1,6 @@
 import plugin from 'tailwindcss/plugin'
-import headlessUiPlugin from '@headlessui/tailwindcss'
-import addHeaders from './tailwind/headers'
-import addLayouts from './tailwind/layouts'
-import addUtils from './tailwind/utils'
-
-const c = (color, opacityValue) => {
-  return opacityValue === undefined
-    ? `rgb(var(${color}))`
-    : `rgba(var(${color}), ${opacityValue})`
-}
-
-// return color with concomitant opacity
-const co = (color) => {
-  return ({ opacityValue }) => c(color, opacityValue)
-}
-
-// fill values for enumerable props
-const fill = (
-  volume,
-  valueGetter,
-  keyGetter = (i) => `${i + 1}`,
-) => {
-  const config = {}
-  for (let i = 0; i < volume; i++) {
-    config[keyGetter(i, volume)] = valueGetter(i, volume)
-  }
-  return config
-}
+import { addButton, addFlexUtils, addHeaders, addInput, addLink, addPopup, addSizeUtils } from './src/tailwind'
+import { co, fill } from './src/tailwind/helpers'
 
 const sansSerif = [
   'ui-sans-serif',
@@ -39,16 +13,7 @@ const sansSerif = [
 export default {
   mode: 'jit',
   prefix: 'tw-',
-  safelist: [
-    'light-mode',
-    'dark-mode',
-  ],
-  content: [
-    './**/*.vue',
-    './**/*.scss',
-    './plugins/**/*.{js,ts}',
-    './nuxt.config.{js,ts}',
-  ],
+  content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     fontSize: {
       'xs': '0.75rem',
@@ -81,11 +46,13 @@ export default {
       state: {
         error: co('--state-error'),
       },
+      current: 'currentcolor',
     },
+
     fontFamily: {
-      header: ['Manrope', ...sansSerif],
-      sans: ['"Open Sans"', ...sansSerif],
-      mono: ['monospace'],
+      header: ['var(--font-manrope)', 'Manrope', ...sansSerif],
+      sans: ['var(--font-opensans)', '"Open Sans"', ...sansSerif],
+      mono: ['var(--font-dm-mono)', '"DM Mono"', 'monospace'],
     },
     lineHeight: {
       1: 1,
@@ -95,36 +62,36 @@ export default {
       inherit: 'inherit',
     },
     // skins
-    textColor: (theme) => ({
+    textColor: theme => ({
       ...theme('colors'),
       base: co('--color-base'),
-      dim: fill(3, (i) => co(`--color-dim-${i + 1}`)),
+      dim: fill(3, i => co(`--color-dim-${i + 1}`)),
     }),
-    backgroundColor: (theme) => ({
+    backgroundColor: theme => ({
       ...theme('colors'),
       base: co('--bg-base'),
-      dim: fill(3, (i) => co(`--bg-dim-${i + 1}`)),
+      dim: fill(3, i => co(`--bg-dim-${i + 1}`)),
     }),
-    borderColor: (theme) => ({
+    borderColor: theme => ({
       ...theme('colors'),
       base: co('--border-base'),
-      dim: fill(3, (i) => co(`--border-dim-${i + 1}`)),
+      dim: fill(3, i => co(`--border-dim-${i + 1}`)),
       transparent: 'transparent',
     }),
     borderRadius: {
       0: '0',
-      sm: '0.25rem',
-      DEFAULT: '0.5rem',
-      lg: '0.75rem',
-      xl: '1rem',
+      sm: '0.5rem',
+      DEFAULT: '0.75rem',
+      lg: '1rem',
+      xl: '1.5rem',
       full: '9999px',
     },
     scale: {
       click: '0.975',
       normal: '1',
     },
-    fill: (theme) => theme('textColor'),
-    stroke: (theme) => theme('borderColor'),
+    fill: theme => theme('textColor'),
+    stroke: theme => theme('borderColor'),
     opacity: {
       0: '0',
       muted: '0.5',
@@ -146,12 +113,20 @@ export default {
         '2xs': '320px',
         'xs': '400px',
       },
+      spacing: {
+        em: '1em',
+      },
     },
   },
   plugins: [
     plugin(addHeaders),
-    plugin(addLayouts),
-    plugin(addUtils),
-    headlessUiPlugin,
+    plugin(addFlexUtils),
+    plugin(addSizeUtils),
+
+    // Components
+    plugin(addButton),
+    plugin(addInput),
+    plugin(addPopup),
+    plugin(addLink),
   ],
 }

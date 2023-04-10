@@ -1,0 +1,38 @@
+@use 'themes';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-size: 16px; // 1rem
+    @apply tw-text-base tw-bg-base tw-font-sans tw-leading-sm;
+  }
+  body {
+    @apply tw-overscroll-none;
+  }
+  small {
+    @apply tw-text-sm;
+  }
+  a {
+    @apply tw-link;
+  }
+  input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+
+  ::selection {
+    @apply tw-text-accent-secondary tw-bg-dim-1;
+  }
+
+  :root {
+    // base
+    --black: 0, 0, 0;
+    --white: 255, 255, 255;
+    --accent-primary: 233, 14, 241;
+    --accent-secondary: 50, 205, 192;
+
+    @include themes.dark-mode;
+  }
+}

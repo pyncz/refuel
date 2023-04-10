@@ -1,17 +1,20 @@
 {
   "workbench.colorCustomizations": {
     "activityBar.background": "#320e44",
-    "titleBar.activeBackground": "#45155d",
-    "titleBar.activeForeground": "#86dbff"
+    "titleBar.activeBackground": "#72117f",
+    "titleBar.activeForeground": "#48c8ff"
   },
   "files.associations": {
+    ".env.local": "properties",
     ".env.template": "properties"
   },
+  "i18n-ally.displayLanguage": "en-US",
   "i18n-ally.enabledFrameworks": [
-    "vue"
+    "i18next"
   ],
-  "i18n-ally.localesPaths": "./app/locales",
+  "i18n-ally.localesPaths": "app/public/locales",
   "i18n-ally.keysInUse": [
-    "validations.*",
-  ],
+    "pages.*.title",
+    "pages.*.description"
+  ]
 }
