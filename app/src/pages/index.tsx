@@ -6,7 +6,7 @@ import { useAccount, useConnect, useNetwork, useSigner, useSwitchNetwork } from 
 import i18nextConfig from '../../next-i18next.config'
 import { Button, ChainRepresentation, CreateTaskForm, ErrorMessage, HeadMeta, Select, Spinner } from '../components'
 import type { Chain } from '../models'
-import { useGelatoAutomation } from '../hooks'
+import { useGelatoAutomation, useIsMounted } from '../hooks'
 import { env } from '../env/client.mjs'
 
 export const getStaticProps: GetStaticProps = async ({
@@ -27,6 +27,7 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = () => {
   const { chains } = useNetwork()
 
   const { isConnected } = useAccount()
+  const isMounted = useIsMounted()
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect()
 
   const [chainId, setChainId] = useState(chains[0]?.id)
@@ -63,37 +64,42 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = () => {
         description={i18n.t('pages.index.description')}
       />
 
-      <div className="tw-space-y-4 tw-rounded-xl tw-bg-dim-1 tw-p-6 tw-mx-auto tw-w-full tw-max-w-md">
+      <div className="tw-space-y-4 tw-rounded-lg sm:tw-rounded-xl tw-bg-dim-1 tw-p-6 tw-mx-auto tw-w-full tw-max-w-md">
         <Select
           value={chainId?.toString()}
           options={chains}
-          disabled={(isConnected && !switchNetwork) || isSwitchingNetwork}
+          disabled={!isMounted || (isConnected && !switchNetwork) || isSwitchingNetwork}
           getValue={option => (option as Chain).id.toString()}
           getTextValue={option => (option as Chain).name}
           ariaLabel={i18n.t('chain')}
           renderOption={option => (
-            <ChainRepresentation chainId={(option as Chain).id} />
+            <ChainRepresentation className="tw--ml-1" chainId={(option as Chain).id} />
           )}
           onChange={newChainId => changeChain(+newChainId)}
         />
 
         <CreateTaskForm chainId={chainId} onSubmit={form => createTask(form)}>
-          {connectors.map(connector => (
-            <Button
-              appearance="secondary"
-              disabled={!connector.ready}
-              key={connector.id}
-              iconRight={isLoading && pendingConnector?.id === connector.id
-                ? <Spinner />
-                : null
-              }
-              onClick={() => connect({ connector, chainId })}
-            >
-              {connector.name}
-            </Button>
-          ))}
-
-          {error ? <ErrorMessage error={error} /> : null}
+          <div className="tw-space-y-6">
+            {error ? <ErrorMessage error={error} /> : null}
+            <div className="tw-space-y-2">
+              {connectors.map(connector => (
+                <Button
+                  appearance="secondary"
+                  type="button"
+                  className="tw-w-full"
+                  disabled={!isMounted || !connector.ready}
+                  key={connector.id}
+                  iconRight={isLoading && pendingConnector?.id === connector.id
+                    ? <Spinner />
+                    : null
+                  }
+                  onClick={() => connect({ connector, chainId })}
+                >
+                  {connector.name}
+                </Button>
+              ))}
+            </div>
+          </div>
         </CreateTaskForm>
       </div>
     </>

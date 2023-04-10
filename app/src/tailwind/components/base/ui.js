@@ -4,8 +4,8 @@ export const getUiElement = (theme) => {
   }
 
   return {
-    'height': '2rem',
-    'padding': '0.25rem 0.75rem',
+    'height': 'var(--ui-size)',
+    'padding': 'var(--ui-py) var(--ui-px)',
 
     'outline': 'none !important',
     'lineHeight': '1',

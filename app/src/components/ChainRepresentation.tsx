@@ -5,9 +5,10 @@ import { useNetwork } from 'wagmi'
 import classNames from 'classnames'
 import { Icon } from '@iconify-icon/react'
 import chainIcon from '@iconify/icons-ion/cube-outline'
+import Image from 'next/image'
 import { getChainLogo } from '../utils'
 import type { WithClassName } from '../models'
-import { Representation, RepresentationImage } from './Representation'
+import { Representation } from './Representation'
 
 interface Props {
   chainId: number
@@ -32,14 +33,18 @@ export const ChainRepresentation: FC<WithClassName<Props>> = (props) => {
       className={classNames('tw-font-mono', className)}
       label={chainName}
       image={(
-        <div className="tw-circle-8 tw-bg-dim-2 tw-flex-center">
+        <div className="tw-circle-8 tw-relative tw-bg-dim-2 tw-flex-center">
           {logo
-            ? <RepresentationImage
-                alt={i18n.t('logo', { name: chainTitle })}
-                image={logo}
-                size="xs"
-              />
-            : <Icon icon={chainIcon} className="tw-size-5 tw-text-dim-2" />
+            ? (
+              <div className="tw-absolute tw-inset-1.5">
+                <Image
+                  alt={i18n.t('logo', { name: chainTitle })}
+                  src={logo}
+                  fill
+                />
+              </div>
+              )
+            : <Icon icon={chainIcon} className="tw-text-dim-2 tw-text-normal" />
           }
         </div>
       )}

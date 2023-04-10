@@ -16,28 +16,27 @@ export const Button = forwardRef<HTMLButtonElement, WithClassName<ButtonProps>>(
   const noContent = !(children || iconLeft || iconRight)
 
   return (
-    <div className={className}>
-      <button
-        ref={ref}
-        {...attributes}
-        className={classNames(
-          'tw-button tw--mx-0.5',
-          {
-            'tw-button-icon': noContent,
-            'tw-button-primary': appearance === 'primary',
-            'tw-button-secondary': appearance === 'secondary',
-          },
-        )}
-      >
-        {icon ?? (
-          <>
-            {iconLeft}
-            {children}
-            {iconRight}
-          </>
-        )}
-      </button>
-    </div>
+    <button
+      ref={ref}
+      {...attributes}
+      className={classNames(
+        'tw-button',
+        className,
+        {
+          'tw-button-icon': noContent,
+          'tw-button-primary': appearance === 'primary',
+          'tw-button-secondary': appearance === 'secondary',
+        },
+      )}
+    >
+      {icon ?? (
+        <>
+          {iconLeft}
+          {children}
+          {iconRight}
+        </>
+      )}
+    </button>
   )
 })
 

@@ -35,7 +35,7 @@ export const RepresentationImage: FC<WithClassName<Props>> = (props) => {
 
     return (
       <Image
-        className={classNames('tw-object-cover tw-inline-block tw--ml-0.5', className)}
+        className={classNames('tw-object-cover tw-inline-block tw--mx-0.5', className)}
         src={image}
         alt={alt!}
         width={sizePx}

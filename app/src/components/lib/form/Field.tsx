@@ -19,13 +19,13 @@ export const Field: FC<WithClassName<Props>> = (props) => {
   const contextClassNames = 'tw-duration-normal tw-opacity-muted group-hover/field:tw-opacity-soft group-focus-within/field:!tw-opacity-full'
 
   return (
-    <div className={classNames('tw-space-y-field tw-group/field', className)}>
+    <div className={classNames('tw-space-y-1 tw-group/field', className)}>
       {label
         ? (
           <div className="tw-flex">
             <Label.Root
               htmlFor={id}
-              className={classNames('tw-text-3/4', contextClassNames)}
+              className={contextClassNames}
             >{label}</Label.Root>
           </div>
           )

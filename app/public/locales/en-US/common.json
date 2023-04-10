@@ -3,6 +3,7 @@
   "amount": "Amount",
   "chain": "Chain",
   "chainName": "{{name}} Chain",
+  "copyAddress": "Copy address",
   "createTask": "Create task",
   "errors": {
     "notErc20": "Not an ERC20 contract address!",

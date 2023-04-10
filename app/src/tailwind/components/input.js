@@ -33,7 +33,6 @@ export const addInput = ({ addComponents, theme }) => {
       'color': c('--input-text', 'var(--tw-text-opacity)'),
       'backgroundColor': c('--input-bg', 'var(--tw-bg-opacity)'),
       'border': `${theme('borderWidth.DEFAULT')} solid ${c('--input-border', 'var(--tw-border-opacity)')}`,
-      'fontSize': '0.875rem',
 
       '&:not(button):read-only': {
         color: c('--input-readonly-text', 'var(--tw-text-opacity)'),

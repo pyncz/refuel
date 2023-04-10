@@ -61,9 +61,11 @@ const App: AppType = ({ Component, pageProps }: AppProps) => {
   return (
     <WagmiConfig client={client}>
       <main className="tw-container tw-py-12 tw-min-h-screen tw-flex tw-flex-col tw-gap-4">
-        <div className="tw-flex-center-y tw-flex-col tw-justify-between sm:tw-flex-row">
+        <div className="tw-flex-center-y tw-flex-col tw-gap-4 tw-justify-between sm:tw-flex-row">
           <LogoLink />
-          <ConnectionStatus />
+          <div className="sm:tw-h-0 tw-inline-flex tw-w-full sm:tw-w-auto tw-items-center">
+            <ConnectionStatus className="tw-w-full" />
+          </div>
         </div>
 
         <div className="tw-flex-1 tw-flex-center tw-flex-col tw-gap-4">

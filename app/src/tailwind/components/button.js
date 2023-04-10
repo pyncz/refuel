@@ -25,7 +25,6 @@ export const addButton = ({ addComponents, addUtilities, theme }) => {
       'color': c('--button-text', 'var(--tw-text-opacity)'),
       'backgroundColor': c('--button-bg', 'var(--tw-bg-opacity)'),
       'fontWeight': theme('fontWeight.medium'),
-      'fontSize': '1rem',
 
       '&:disabled': disabledStyles,
       '&[data-disabled]': disabledStyles,
@@ -56,9 +55,9 @@ export const addButton = ({ addComponents, addUtilities, theme }) => {
   })
   addComponents({
     '.button-icon': {
-      padding: '0.25rem',
-      height: '2rem',
-      width: '2rem',
+      padding: 'var(--ui-px)',
+      height: 'var(--ui-size)',
+      width: 'var(--ui-size)',
     },
   })
 }

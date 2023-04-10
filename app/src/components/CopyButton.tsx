@@ -9,6 +9,7 @@ import type { WithClassName } from '../models'
 
 interface Props {
   value: string
+  title?: string
 }
 
 export const CopyButton: FC<PropsWithChildren<WithClassName<Props>>> = (props) => {

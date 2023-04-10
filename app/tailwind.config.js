@@ -94,6 +94,7 @@ export default {
     stroke: theme => theme('borderColor'),
     opacity: {
       0: '0',
+      20: '0.2',
       muted: '0.5',
       soft: '0.8',
       full: '1',
