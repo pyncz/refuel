@@ -4,7 +4,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
 import { useAccount, useConnect, useSigner, useSwitchNetwork } from 'wagmi'
 import i18nextConfig from '../../next-i18next.config'
-import { Button, ChainRepresentation, CreateTaskForm, ErrorMessage, HeadMeta, Select, Spinner } from '../components'
+import { Button, ChainRepresentation, ClientOnly, CreateTaskForm, ErrorMessage, HeadMeta, Select, Spinner } from '../components'
 import type { Chain } from '../models'
 import { useChains, useGelatoAutomation, useIsMounted } from '../hooks'
 import { env } from '../env/client.mjs'
@@ -65,18 +65,20 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = () => {
       />
 
       <div className="tw-space-y-4 tw-rounded-lg sm:tw-rounded-xl tw-bg-dim-1 tw-p-6 tw-mx-auto tw-w-full tw-max-w-md">
-        <Select
-          value={chainId?.toString()}
-          options={chains}
-          disabled={!isMounted || (isConnected && !switchNetwork) || isSwitchingNetwork}
-          getValue={option => (option as Chain).id.toString()}
-          getTextValue={option => (option as Chain).name}
-          ariaLabel={i18n.t('chain')}
-          renderOption={option => (
-            <ChainRepresentation className="tw--ml-1" chainId={(option as Chain).id} />
-          )}
-          onChange={newChainId => changeChain(+newChainId)}
-        />
+        <ClientOnly>
+          <Select
+            value={chainId?.toString()}
+            options={chains}
+            disabled={!isMounted || (isConnected && !switchNetwork) || isSwitchingNetwork}
+            getValue={option => (option as Chain).id.toString()}
+            getTextValue={option => (option as Chain).name}
+            ariaLabel={i18n.t('chain')}
+            renderOption={option => (
+              <ChainRepresentation className="tw--ml-1" chainId={(option as Chain).id} />
+            )}
+            onChange={newChainId => changeChain(+newChainId)}
+          />
+        </ClientOnly>
 
         <CreateTaskForm chainId={chainId} onSubmit={form => createTask(form)}>
           <div className="tw-space-y-6">
