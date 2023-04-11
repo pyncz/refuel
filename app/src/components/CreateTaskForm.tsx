@@ -6,7 +6,7 @@ import { fetchToken } from '@wagmi/core'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { AutomationForm, HexAddress } from '../models'
-import { address, intLike } from '../models'
+import { address, positiveStringifiedNumber } from '../models'
 import { Button, ControlledField, ErrorMessage, Input } from './lib'
 
 interface Props {
@@ -36,8 +36,8 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
   const automationFormSchema = z.object({
     sourceTokenAddress: address.refine(isErc20Address, i18n.t('errors.notErc20')),
     watchedTokenAddress: address.refine(isErc20Address, i18n.t('errors.notErc20')),
-    threshold: intLike.transform(String),
-    replenishmentAmount: intLike.transform(String),
+    threshold: positiveStringifiedNumber,
+    replenishmentAmount: positiveStringifiedNumber,
   })
 
   type AutomationFormInput = z.infer<typeof automationFormSchema>
@@ -54,8 +54,8 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
     resolver: zodResolver(automationFormSchema, { async: true }),
 
     defaultValues: {
-      threshold: '0.1',
-      replenishmentAmount: '0.1',
+      threshold: 0.1,
+      replenishmentAmount: 0.1,
     },
     mode: 'onChange',
   })
