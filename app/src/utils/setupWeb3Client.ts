@@ -1,6 +1,5 @@
 import type { Chain } from 'wagmi'
 import { configureChains, createClient } from 'wagmi'
-import { goerli, hardhat, mainnet } from 'wagmi/chains'
 
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
@@ -13,14 +12,8 @@ import { InjectedConnector } from 'wagmi/connectors/injected'
 import { env } from '../env/client.mjs'
 import { getAbsoluteBaseUrl } from './app/getBaseUrl'
 
-export const setupWeb3Client = () => {
+export const setupWeb3Client = (chains: Chain[]) => {
   const baseUrl = getAbsoluteBaseUrl()
-
-  const chains: Chain[] = env.NEXT_PUBLIC_NODE_ENV === 'production'
-    ? [mainnet]
-    : env.NEXT_PUBLIC_NODE_ENV === 'test'
-      ? [goerli]
-      : [goerli, hardhat]
 
   const { provider, webSocketProvider } = configureChains(
     chains,

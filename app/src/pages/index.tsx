@@ -2,11 +2,11 @@ import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
-import { useAccount, useConnect, useNetwork, useSigner, useSwitchNetwork } from 'wagmi'
+import { useAccount, useConnect, useSigner, useSwitchNetwork } from 'wagmi'
 import i18nextConfig from '../../next-i18next.config'
 import { Button, ChainRepresentation, CreateTaskForm, ErrorMessage, HeadMeta, Select, Spinner } from '../components'
 import type { Chain } from '../models'
-import { useGelatoAutomation, useIsMounted } from '../hooks'
+import { useChains, useGelatoAutomation, useIsMounted } from '../hooks'
 import { env } from '../env/client.mjs'
 
 export const getStaticProps: GetStaticProps = async ({
@@ -24,7 +24,7 @@ export const getStaticProps: GetStaticProps = async ({
 const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = () => {
   const { i18n } = useTranslation()
 
-  const { chains } = useNetwork()
+  const chains = useChains()
 
   const { isConnected } = useAccount()
   const isMounted = useIsMounted()

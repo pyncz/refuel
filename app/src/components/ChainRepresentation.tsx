@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
 import type { FC } from 'react'
 import { useTranslation } from 'next-i18next'
-import { useNetwork } from 'wagmi'
 import classNames from 'classnames'
 import { Icon } from '@iconify-icon/react'
 import chainIcon from '@iconify/icons-ion/cube-outline'
 import Image from 'next/image'
 import { getChainLogo } from '../utils'
 import type { WithClassName } from '../models'
+import { useChains } from '../hooks'
 import { Representation } from './Representation'
 
 interface Props {
@@ -16,10 +16,9 @@ interface Props {
 
 export const ChainRepresentation: FC<WithClassName<Props>> = (props) => {
   const { chainId, className } = props
-
   const { i18n } = useTranslation()
 
-  const { chains } = useNetwork()
+  const chains = useChains()
   const chain = useMemo(() => chains.find(c => c.id === chainId), [chains, chainId])
 
   const chainName = useMemo(() => chain?.name ?? chainId.toString(), [chain, chainId])
