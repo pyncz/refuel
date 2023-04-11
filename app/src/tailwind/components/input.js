@@ -5,9 +5,10 @@ export const addInput = ({ addComponents, theme }) => {
   const uiElement = getUiElement(theme)
 
   const disabledStyles = {
-    'color': c('--input-disabled-text', 'var(--tw-text-opacity)'),
-    'backgroundColor': c('--input-disabled-bg', 'var(--tw-bg-opacity)'),
-    'borderColor': c('--input-disabled-border', 'var(--tw-border-opacity)'),
+    '--x-input-bg': 'var(--input-disabled-bg)',
+    '--x-input-text': 'var(--input-disabled-text)',
+    '--x-input-border': 'var(--input-disabled-border)',
+
     '&::placeholder, &[data-placeholder]': {
       color: c('--input-disabled-placeholder', 'var(--tw-text-opacity)'),
     },
@@ -15,27 +16,28 @@ export const addInput = ({ addComponents, theme }) => {
   const placeholderStyles = {
     color: c('--input-placeholder', 'var(--tw-text-opacity)'),
   }
-  const focusStyles = {
-    borderColor: c('--input-border--focus', 'var(--tw-border-opacity)'),
-  }
 
   addComponents({
     '.input': {
       // defaults
-      '--tw-text-opacity': '1',
       '--tw-bg-opacity': '1',
+      '--tw-text-opacity': '1',
       '--tw-border-opacity': '1',
 
       ...uiElement,
+      '--x-input-bg': 'var(--input-bg)',
+      '--x-input-text': 'var(--input-text)',
+      '--x-input-border': 'var(--input-border)',
+      '--ui-ring': 'var(--x-input-border)',
 
       'display': 'inline-flex',
       'alignItems': 'center',
-      'color': c('--input-text', 'var(--tw-text-opacity)'),
-      'backgroundColor': c('--input-bg', 'var(--tw-bg-opacity)'),
-      'border': `${theme('borderWidth.DEFAULT')} solid ${c('--input-border', 'var(--tw-border-opacity)')}`,
+      'color': c('--x-input-text', 'var(--tw-text-opacity)'),
+      'backgroundColor': c('--x-input-bg', 'var(--tw-bg-opacity)'),
+      'border': `${theme('borderWidth.DEFAULT')} solid ${c('--x-input-border', 'var(--tw-border-opacity)')}`,
 
       '&:not(button):read-only': {
-        color: c('--input-readonly-text', 'var(--tw-text-opacity)'),
+        '--x-input-text': 'var(--input-readonly-text)',
       },
 
       '&::placeholder': {
@@ -58,16 +60,15 @@ export const addInput = ({ addComponents, theme }) => {
 
       '&:hover': {
         ...uiElement['&:hover'],
-        borderColor: c('--input-border--hover', 'var(--tw-border-opacity)'),
+        '--x-input-border': 'var(--input-border--hover)',
       },
 
-      '&:focus': {
+      '&:focus, &:focus-within': {
         ...uiElement['&:focus'],
-        ...focusStyles,
-      },
-      '&:focus-within': {
-        ...uiElement['&:focus-within'],
-        ...focusStyles,
+        '--x-input-border': 'var(--input-border--focus)',
+        '&:hover': {
+          '--x-input-border': 'var(--input-border--focus-hover)',
+        },
       },
     },
   })

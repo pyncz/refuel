@@ -69,7 +69,7 @@ const App: AppType = ({ Component, pageProps }: AppProps) => {
   return (
     <ChainsProvider chains={chains}>
       <WagmiConfig client={client}>
-        <main className="tw-container tw-py-12 tw-min-h-screen tw-flex tw-flex-col tw-gap-4">
+        <main className="tw-container tw-py-12 tw-min-h-screen tw-flex tw-flex-col tw-gap-4 sm:tw-gap-8">
           <Component {...pageProps} />
         </main>
       </WagmiConfig>

@@ -17,7 +17,7 @@
     },
     "sourceTokenAddress": {
       "description": "The balance will be replenished by swapping this token.",
-      "label": "Source token",
+      "label": "Replenish from",
       "placeholder": "$t(address)"
     },
     "threshold": {

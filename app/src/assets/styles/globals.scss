@@ -5,6 +5,9 @@
 @import 'themes';
 
 @layer base {
+  * {
+    outline: 0 !important;
+  }
   html {
     font-size: 16px; // 1rem
     @apply tw-text-base tw-bg-base tw-font-sans tw-leading-sm;
@@ -30,8 +33,14 @@
     // base
     --black: 0, 0, 0;
     --white: 255, 255, 255;
+
     --accent-primary: 233, 14, 241;
+    --accent-primary-lighten: 238, 62, 244;
+    --accent-primary-darken: 187, 11, 193;
+
     --accent-secondary: 50, 205, 192;
+    --accent-secondary-lighten: 91, 215, 205;
+    --accent-secondary-darken: 40, 164, 154;
 
     @include dark-mode;
   }

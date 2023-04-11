@@ -12,18 +12,21 @@ export const addButton = ({ addComponents, addUtilities, theme }) => {
   addComponents({
     '.button': {
       // defaults
-      '--tw-text-opacity': '1',
       '--tw-bg-opacity': '1',
+      '--tw-text-opacity': '1',
 
       ...uiElement,
+      '--x-button-bg': 'var(--button-bg)',
+      '--x-button-text': 'var(--button-text)',
+      '--ui-ring': 'var(--x-button-bg)',
 
       'cursor': 'pointer',
       'gap': theme('gap.1'),
       'display': 'inline-flex',
       'justifyContent': 'center',
       'alignItems': 'center',
-      'color': c('--button-text', 'var(--tw-text-opacity)'),
-      'backgroundColor': c('--button-bg', 'var(--tw-bg-opacity)'),
+      'backgroundColor': c('--x-button-bg', 'var(--tw-bg-opacity)'),
+      'color': c('--x-button-text', 'var(--tw-text-opacity)'),
       'fontWeight': theme('fontWeight.medium'),
 
       '&:disabled': disabledStyles,
@@ -31,8 +34,8 @@ export const addButton = ({ addComponents, addUtilities, theme }) => {
 
       '&:hover': {
         ...uiElement['&:hover'],
-        color: c('--button-text--hover', 'var(--tw-text-opacity)'),
-        backgroundColor: c('--button-bg--hover', 'var(--tw-bg-opacity)'),
+        '--x-button-bg': 'var(--button-bg--hover)',
+        '--x-button-text': 'var(--button-text--hover)',
       },
       '&:active': {
         transform: `scale(${theme('scale.click')})`,

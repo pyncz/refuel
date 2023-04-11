@@ -1,18 +1,10 @@
-import type { InputHTMLAttributes } from 'react'
 import { forwardRef } from 'react'
 import * as Label from '@radix-ui/react-label'
-import type { MaybePromise, OmitListeners } from '@voire/type-utils'
 import classNames from 'classnames'
-import type { WithClassName } from '../../../models'
+import type { InputProps, WithClassName } from '../../../models'
 import { useUncontrolledValue } from '../../../hooks'
 
-interface Props extends OmitListeners<InputHTMLAttributes<HTMLInputElement>> {
-  label?: string
-  onChange?: (value: string) => MaybePromise<void>
-  onBlur?: () => MaybePromise<void>
-}
-
-export const Input = forwardRef<HTMLInputElement, WithClassName<Props>>((props, ref) => {
+export const Input = forwardRef<HTMLInputElement, WithClassName<InputProps>>((props, ref) => {
   const {
     label,
     className,

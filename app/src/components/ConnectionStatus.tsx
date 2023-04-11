@@ -23,7 +23,7 @@ export const ConnectionStatus: FC<WithClassName> = ({ className }) => {
 
   if (isConnected && address && formattedAddress && connector) {
     return (
-      <div className={classNames('tw-bg-dim-1 tw-rounded-lg tw-p-3 tw-inline-flex tw-items-center tw-gap-4', className)}>
+      <div className={classNames('tw-bg-dim-1 tw-rounded-lg tw-p-3 tw-inline-flex tw-flex-col xs:tw-flex-row xs:tw-items-center tw-gap-4', className)}>
         <div className="tw-inline-flex tw-items-center tw-gap-2 tw-flex-1">
           <div className="tw-relative tw-circle-10 tw-bg-dim-2 tw-flex-center">
             {ensAvatar

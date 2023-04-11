@@ -1,4 +1,9 @@
 @mixin dark-mode {
+  --accent-primary-vivid: var(--accent-primary-lighten);
+  --accent-primary-muted: var(--accent-primary-darken);
+  --accent-secondary-vivid: var(--accent-secondary-lighten);
+  --accent-secondary-muted: var(--accent-secondary-darken);
+
   /* text */
   --color-base: 250, 250, 254;
   --color-dim-1: 210, 210, 215;
@@ -13,17 +18,20 @@
 
   /* border */
   --border-base: 70, 70, 77;
-  --border-dim-1: 60, 60, 66;
-  --border-dim-2: 50, 50, 55;
-  --border-dim-3: 40, 40, 44;
+  --border-dim-1: 50, 50, 56;
+  --border-dim-2: 35, 35, 40;
+  --border-dim-3: 25, 25, 29;
 
   /* State */
   --state-error: 255, 129, 143;
 
   /* UI */
-  --ui-size: 2.5em;
+  --ui-size: 2.75em;
   --ui-px: 0.75em;
   --ui-py: 0.25em;
+  // link
+  --link-primary: var(--accent-secondary);
+  --link-primary-vivid: var(--accent-secondary-vivid);
   // button
   --button-primary-bg: var(--accent-primary);
   --button-primary-bg-vivid: var(--accent-primary-vivid);
@@ -38,13 +46,36 @@
   --input-text: var(--color-dim-1);
   --input-border: var(--border-dim-2);
   --input-border--hover: var(--border-dim-1);
-  --input-border--focus: var(--accent-primary);
+  --input-border--focus: var(--accent-secondary);
+  --input-border--focus-hover: var(--accent-secondary-vivid);
   --input-placeholder: var(--color-dim-3);
   --input-readonly-text: var(--color-dim-2);
   --input-disabled-bg: var(--bg-dim-1);
   --input-disabled-text: var(--color-dim-2);
   --input-disabled-border: var(--border-dim-3);
   --input-disabled-placeholder: var(--color-dim-3);
+  // select
+  // - trigger
+  --select-icon: var(--color-dim-3);
+  // - container
+  --select-arrow: var(--color-dim-3);
+  --select-arrow--hover: var(--color-dim-2);
+  --select-content-bg: var(--bg-dim-2);
+  // - option
+  --select-accent: var(--accent-primary);
+  --select-accent--hover: var(--accent-secondary-vivid);
+  --select-option-text: var(--color-dim-2);
+  --select-option-text--hover: var(--color-dim-1);
+  --select-option-text--highlighted: var(--color-dim-1);
+  --select-option-disabled-text: var(--color-dim-3);
+  --select-option-bg: var(--bg-dim-1);
+  --o-select-option-bg: 0;
+  --select-option-bg--hover: var(--bg-dim-1);
+  --o-select-option-bg--hover: 0.5;
+  --select-option-checked-text: var(--color-base);
+  --select-option-checked-text--hover: var(--color-base);
+  --select-option-checked-bg: var(--bg-base);
+  --o-select-option-checked-bg: 1;
 
   --o-ring: 0.2;
 }

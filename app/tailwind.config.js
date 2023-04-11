@@ -116,6 +116,7 @@ export default {
       },
       spacing: {
         em: '1em',
+        ui: 'var(--ui-size)',
       },
     },
   },
@@ -129,5 +130,10 @@ export default {
     plugin(addInput),
     plugin(addPopup),
     plugin(addLink),
+
+    ({ addVariant }) => {
+      addVariant('checked', '&[data-state="checked"]')
+      addVariant('child', '& > *')
+    },
   ],
 }

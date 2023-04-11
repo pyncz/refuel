@@ -1,4 +1,4 @@
-import type { Nullable } from '@voire/type-utils'
+import type { Optional } from '@voire/type-utils'
 import { useMemo } from 'react'
 import type { Control, Path, PathValue, UseFormWatch } from 'react-hook-form'
 
@@ -10,9 +10,9 @@ export const useValidValue = <
   const { invalid } = control.getFieldState(name)
 
   const validValue = useMemo<
-    Nullable<PathValue<TForm, TName>>
+    Optional<PathValue<TForm, TName>>
   >(() => {
-    return invalid ? null : value
+    return invalid ? undefined : value
   }, [invalid, value])
 
   return validValue

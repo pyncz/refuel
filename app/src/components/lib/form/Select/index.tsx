@@ -74,14 +74,14 @@ export const Select = forwardRef<HTMLButtonElement, WithClassName<Props>>((props
         aria-label={ariaLabel}
       >
         <RadixSelect.Value placeholder={placeholder} className="tw-inline-flex tw-flex-1" />
-        <RadixSelect.Icon className="tw-duration-fast group-disabled/trigger:tw-opacity-muted tw-text-[rgba(var(--c-select-icon),_var(--tw-text-opacity))] tw-inline-flex tw-absolute tw-right-2">
+        <RadixSelect.Icon className="tw-duration-fast group-disabled/trigger:tw-opacity-muted tw-text-[rgba(var(--select-icon),_var(--tw-text-opacity))] tw-inline-flex tw-absolute tw-right-2">
           <Icon icon={chevronDownIcon} />
         </RadixSelect.Icon>
       </RadixSelect.Trigger>
 
       <RadixSelect.Portal>
-        <RadixSelect.Content className="tw-backdrop-blur-sm tw-bg-opacity-[0.95] tw-py-0.5 tw-shadow-popup tw-overflow-hidden tw-bg-[rgba(var(--c-select-content-bg),_var(--tw-bg-opacity))] tw-rounded tw-text-dim-1 tw-duration-fast tw-border-container">
-          <RadixSelect.ScrollUpButton className="tw-w-full tw-text-center tw-duration-fast tw-text-[rgba(var(--c-select-arrow),_var(--tw-text-opacity))] hover:tw-text-[rgba(var(--c-select-arrow--hover),_var(--tw-text-opacity))]">
+        <RadixSelect.Content className="tw-backdrop-blur-sm tw-bg-opacity-soft tw-shadow-sm tw-py-0.5 tw-shadow-popup tw-overflow-hidden tw-bg-[rgba(var(--select-content-bg),_var(--tw-bg-opacity))] tw-rounded-lg tw-text-dim-1 tw-duration-fast tw-border-container">
+          <RadixSelect.ScrollUpButton className="tw-w-full tw-text-center tw-duration-fast tw-text-[rgba(var(--select-arrow),_var(--tw-text-opacity))] hover:tw-text-[rgba(var(--select-arrow--hover),_var(--tw-text-opacity))]">
             <Icon icon={chevronUpIcon} />
           </RadixSelect.ScrollUpButton>
 
@@ -101,7 +101,7 @@ export const Select = forwardRef<HTMLButtonElement, WithClassName<Props>>((props
             })}
           </RadixSelect.Viewport>
 
-          <RadixSelect.ScrollDownButton className="tw-w-full tw-text-center tw-duration-fast tw-text-[rgba(var(--c-select-arrow),_var(--tw-text-opacity))] hover:tw-text-[rgba(var(--c-select-arrow--hover),_var(--tw-text-opacity))]">
+          <RadixSelect.ScrollDownButton className="tw-w-full tw-text-center tw-duration-fast tw-text-[rgba(var(--select-arrow),_var(--tw-text-opacity))] hover:tw-text-[rgba(var(--select-arrow--hover),_var(--tw-text-opacity))]">
             <Icon icon={chevronDownIcon} />
           </RadixSelect.ScrollDownButton>
         </RadixSelect.Content>

@@ -2,9 +2,9 @@ import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
-import { useAccount, useConnect, useSigner, useSwitchNetwork } from 'wagmi'
+import { useAccount, useConnect, useNetwork, useSigner, useSwitchNetwork } from 'wagmi'
 import i18nextConfig from '../../next-i18next.config'
-import { Button, ChainRepresentation, ClientOnly, ConnectionStatus, CreateTaskForm, ErrorMessage, HeadMeta, LogoLink, Select, Spinner } from '../components'
+import { Button, ChainRepresentation, ClientOnly, ConnectionStatus, CreateTaskForm, ErrorMessage, Field, HeadMeta, LogoLink, Select, Spinner } from '../components'
 import type { Chain } from '../models'
 import { useChains, useGelatoAutomation, useIsMounted } from '../hooks'
 import { env } from '../env/client.mjs'
@@ -27,10 +27,11 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = () => {
   const chains = useChains()
 
   const { isConnected } = useAccount()
+  const { chain: currentChain } = useNetwork()
   const isMounted = useIsMounted()
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect()
 
-  const [chainId, setChainId] = useState(chains[0]?.id)
+  const [chainId, setChainId] = useState(currentChain?.id ?? chains[0]?.id)
 
   const { switchNetwork, isLoading: isSwitchingNetwork } = useSwitchNetwork({
     onSuccess(selectedChain) {
@@ -71,20 +72,27 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = () => {
         </div>
       </div>
 
-      <div className="tw-flex-1 tw-flex-center tw-flex-col tw-gap-4">
-        <div className="tw-space-y-4 tw-rounded-lg sm:tw-rounded-xl tw-bg-dim-1 tw-p-6 tw-mx-auto tw-w-full tw-max-w-md">
+      <div className="sm:tw-flex-1 tw-flex-center tw-flex-col tw-gap-4">
+        <div className="tw-space-y-4 tw-rounded-lg sm:tw-rounded-xl tw-bg-dim-1 tw-p-6 sm:tw-p-8 tw-mx-auto tw-w-full tw-max-w-md">
           <ClientOnly>
-            <Select
-              value={chainId?.toString()}
-              options={chains}
-              disabled={!isMounted || (isConnected && !switchNetwork) || isSwitchingNetwork}
-              getValue={option => (option as Chain).id.toString()}
-              getTextValue={option => (option as Chain).name}
-              ariaLabel={i18n.t('chain')}
-              renderOption={option => (
-                <ChainRepresentation className="tw-relative tw--left-1" chainId={(option as Chain).id} />
+            <Field
+              label={i18n.t('chain')}
+              render={id => (
+                <Select
+                  id={id}
+                  value={chainId?.toString()}
+                  options={chains}
+                  className="tw-w-full"
+                  disabled={!isMounted || (isConnected && !switchNetwork) || isSwitchingNetwork}
+                  getValue={option => (option as Chain).id.toString()}
+                  getTextValue={option => (option as Chain).name}
+                  ariaLabel={i18n.t('chain')}
+                  renderOption={option => (
+                    <ChainRepresentation className="tw-relative tw--left-1" chainId={(option as Chain).id} />
+                  )}
+                  onChange={newChainId => changeChain(+newChainId)}
+                />
               )}
-              onChange={newChainId => changeChain(+newChainId)}
             />
           </ClientOnly>
 
