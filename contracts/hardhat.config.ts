@@ -21,8 +21,8 @@ const config: HardhatUserConfig = {
     hardhat: {
       chainId: 31337,
       forking: {
-        // Fork goerli testnet in order to use WETH
-        url: goerliRpcUrl,
+        // Fork mainnet
+        url: mainnetRpcUrl,
       },
     },
     goerli: {

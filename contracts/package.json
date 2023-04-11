@@ -6,6 +6,7 @@
     "deploy": "hardhat run scripts/deploy.ts",
     "dev": "hardhat node",
     "dev:deploy": "hardhat run scripts/deploy.ts --network localhost",
+    "dev:setup": "hardhat run scripts/dev/setupUsdtBalance.ts --network localhost",
     "dev:console": "hardhat console --network localhost",
     "lint": "solium -d ./contracts"
   },
