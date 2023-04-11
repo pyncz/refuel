@@ -4,7 +4,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
 import { useAccount, useConnect, useSigner, useSwitchNetwork } from 'wagmi'
 import i18nextConfig from '../../next-i18next.config'
-import { Button, ChainRepresentation, ClientOnly, CreateTaskForm, ErrorMessage, HeadMeta, Select, Spinner } from '../components'
+import { Button, ChainRepresentation, ClientOnly, ConnectionStatus, CreateTaskForm, ErrorMessage, HeadMeta, LogoLink, Select, Spinner } from '../components'
 import type { Chain } from '../models'
 import { useChains, useGelatoAutomation, useIsMounted } from '../hooks'
 import { env } from '../env/client.mjs'
@@ -64,45 +64,54 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = () => {
         description={i18n.t('pages.index.description')}
       />
 
-      <div className="tw-space-y-4 tw-rounded-lg sm:tw-rounded-xl tw-bg-dim-1 tw-p-6 tw-mx-auto tw-w-full tw-max-w-md">
-        <ClientOnly>
-          <Select
-            value={chainId?.toString()}
-            options={chains}
-            disabled={!isMounted || (isConnected && !switchNetwork) || isSwitchingNetwork}
-            getValue={option => (option as Chain).id.toString()}
-            getTextValue={option => (option as Chain).name}
-            ariaLabel={i18n.t('chain')}
-            renderOption={option => (
-              <ChainRepresentation className="tw--ml-1" chainId={(option as Chain).id} />
-            )}
-            onChange={newChainId => changeChain(+newChainId)}
-          />
-        </ClientOnly>
+      <div className="tw-flex-center-y tw-flex-col tw-gap-4 tw-justify-between sm:tw-flex-row">
+        <LogoLink />
+        <div className="sm:tw-h-0 tw-inline-flex tw-w-full sm:tw-w-auto tw-items-center">
+          <ConnectionStatus className="tw-w-full" />
+        </div>
+      </div>
 
-        <CreateTaskForm chainId={chainId} onSubmit={form => createTask(form)}>
-          <div className="tw-space-y-6">
-            {error ? <ErrorMessage error={error} /> : null}
-            <div className="tw-space-y-2">
-              {connectors.map(connector => (
-                <Button
-                  appearance="secondary"
-                  type="button"
-                  className="tw-w-full"
-                  disabled={!isMounted || !connector.ready}
-                  key={connector.id}
-                  iconRight={isLoading && pendingConnector?.id === connector.id
-                    ? <Spinner />
-                    : null
+      <div className="tw-flex-1 tw-flex-center tw-flex-col tw-gap-4">
+        <div className="tw-space-y-4 tw-rounded-lg sm:tw-rounded-xl tw-bg-dim-1 tw-p-6 tw-mx-auto tw-w-full tw-max-w-md">
+          <ClientOnly>
+            <Select
+              value={chainId?.toString()}
+              options={chains}
+              disabled={!isMounted || (isConnected && !switchNetwork) || isSwitchingNetwork}
+              getValue={option => (option as Chain).id.toString()}
+              getTextValue={option => (option as Chain).name}
+              ariaLabel={i18n.t('chain')}
+              renderOption={option => (
+                <ChainRepresentation className="tw-relative tw--left-1" chainId={(option as Chain).id} />
+              )}
+              onChange={newChainId => changeChain(+newChainId)}
+            />
+          </ClientOnly>
+
+          <CreateTaskForm chainId={chainId} onSubmit={form => createTask(form)}>
+            <div className="tw-space-y-6">
+              {error ? <ErrorMessage error={error} /> : null}
+              <div className="tw-space-y-2">
+                {connectors.map(connector => (
+                  <Button
+                    appearance="secondary"
+                    type="button"
+                    className="tw-w-full"
+                    disabled={!isMounted || !connector.ready}
+                    key={connector.id}
+                    iconRight={isLoading && pendingConnector?.id === connector.id
+                      ? <Spinner />
+                      : null
                   }
-                  onClick={() => connect({ connector, chainId })}
-                >
-                  {connector.name}
-                </Button>
-              ))}
+                    onClick={() => connect({ connector, chainId })}
+                  >
+                    {connector.name}
+                  </Button>
+                ))}
+              </div>
             </div>
-          </div>
-        </CreateTaskForm>
+          </CreateTaskForm>
+        </div>
       </div>
     </>
   )

@@ -6,7 +6,6 @@ import { goerli, hardhat, mainnet } from 'wagmi/chains'
 import { useEffect } from 'react'
 import { setupWeb3Client } from '../utils'
 import type { Chain } from '../models'
-import { ConnectionStatus, LogoLink } from '../components'
 
 import '../assets/styles/globals.scss'
 import { env } from '../env/server.mjs'
@@ -71,16 +70,7 @@ const App: AppType = ({ Component, pageProps }: AppProps) => {
     <ChainsProvider chains={chains}>
       <WagmiConfig client={client}>
         <main className="tw-container tw-py-12 tw-min-h-screen tw-flex tw-flex-col tw-gap-4">
-          <div className="tw-flex-center-y tw-flex-col tw-gap-4 tw-justify-between sm:tw-flex-row">
-            <LogoLink />
-            <div className="sm:tw-h-0 tw-inline-flex tw-w-full sm:tw-w-auto tw-items-center">
-              <ConnectionStatus className="tw-w-full" />
-            </div>
-          </div>
-
-          <div className="tw-flex-1 tw-flex-center tw-flex-col tw-gap-4">
-            <Component {...pageProps} />
-          </div>
+          <Component {...pageProps} />
         </main>
       </WagmiConfig>
     </ChainsProvider>
