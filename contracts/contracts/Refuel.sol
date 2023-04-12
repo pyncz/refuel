@@ -4,7 +4,6 @@ pragma abicoder v2;
 
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "./utils/AnyTokenOperator.sol";
 import "./utils/gelato/AutomateReady.sol";
@@ -191,9 +190,9 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
         address _token,
         uint256 _maxAmount
     ) internal view returns (uint256 availableAmount) {
-        uint256 tokenBalance = IERC20(_token).balanceOf(_holder);
-        availableAmount = _maxAmount > 0 && _maxAmount < tokenBalance
+        (uint256 balance, ) = _checkBalance(_token, _holder);
+        availableAmount = _maxAmount > 0 && _maxAmount < balance
             ? _maxAmount
-            : tokenBalance;
+            : balance;
     }
 }
