@@ -17,6 +17,7 @@
     "@radix-ui/react-popover": "^1.0.5",
     "@radix-ui/react-select": "^1.2.0",
     "@radix-ui/react-tooltip": "^1.0.3",
+    "chroma-js": "^2.4.2",
     "classnames": "^2.3.2",
     "ethers": "^5.4.7",
     "i18next": "^22.4.5",
@@ -32,6 +33,7 @@
     "zod": "^3.21.0"
   },
   "devDependencies": {
+    "@types/chroma-js": "^2.4.0",
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
     "@types/smart-truncate": "^1.0.2",

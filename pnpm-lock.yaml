@@ -31,11 +31,13 @@ importers:
       '@radix-ui/react-popover': ^1.0.5
       '@radix-ui/react-select': ^1.2.0
       '@radix-ui/react-tooltip': ^1.0.3
+      '@types/chroma-js': ^2.4.0
       '@types/react': ^18.0.14
       '@types/react-dom': ^18.0.5
       '@types/smart-truncate': ^1.0.2
       '@voire/type-utils': ^1.2.1
       autoprefixer: ^10.4.14
+      chroma-js: ^2.4.2
       classnames: ^2.3.2
       eslint-config-next: 13.0.7
       ethers: ^5.4.7
@@ -63,6 +65,7 @@ importers:
       '@radix-ui/react-popover': 1.0.5_zn3vyfk3tbnwebg5ldvieekjaq
       '@radix-ui/react-select': 1.2.1_zn3vyfk3tbnwebg5ldvieekjaq
       '@radix-ui/react-tooltip': 1.0.5_zn3vyfk3tbnwebg5ldvieekjaq
+      chroma-js: 2.4.2
       classnames: 2.3.2
       ethers: 5.7.2
       i18next: 22.4.14
@@ -77,6 +80,7 @@ importers:
       wagmi: 0.12.10_g6sc4pn4txdbooch6nxpi5obj4
       zod: 3.21.4
     devDependencies:
+      '@types/chroma-js': 2.4.0
       '@types/react': 18.0.33
       '@types/react-dom': 18.0.11
       '@types/smart-truncate': 1.0.2
@@ -2235,6 +2239,10 @@ packages:
     resolution: {integrity: sha512-KnRanxnpfpjUTqTCXslZSEdLfXExwgNxYPdiO2WGUj8+HDjFi8R3k5RVKPeSCzLjCcshCAtVO2QBbVuAV4kTnw==}
     dev: true
 
+  /@types/chroma-js/2.4.0:
+    resolution: {integrity: sha512-JklMxityrwjBTjGY2anH8JaTx3yjRU3/sEHSblLH1ba5lqcSh1LnImXJZO5peJfXyqKYWjHTGy4s5Wz++hARrw==}
+    dev: true
+
   /@types/concat-stream/1.6.1:
     resolution: {integrity: sha512-eHE4cQPoj6ngxBZMvVf6Hw7Mh4jMW4U9lpGmS5GBPB9RYxlFg+CHaVN7ErNY4W9XfLIEn20b4VDYaIrbq0q4uA==}
     dependencies:
@@ -4031,6 +4039,10 @@ packages:
       readdirp: 3.6.0
     optionalDependencies:
       fsevents: 2.3.2
+
+  /chroma-js/2.4.2:
+    resolution: {integrity: sha512-U9eDw6+wt7V8z5NncY2jJfZa+hUH8XEj8FQHgFJTrUFnJfXYf4Ml4adI2vXZOjqRDpFWtYVWypDfZwnJ+HIR4A==}
+    dev: false
 
   /ci-info/2.0.0:
     resolution: {integrity: sha512-5tK7EtrZ0N+OLFMthtqOj4fI2Jeb88C4CAZPu25LDVUgXJ0A3Js4PMGqrn0JU1W0Mh1/Z8wZzYPxqUrXeBboCQ==}
