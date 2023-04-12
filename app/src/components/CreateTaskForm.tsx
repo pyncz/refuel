@@ -50,7 +50,7 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
    */
   const automationFormSchema = z.object({
     sourceTokenAddress: address.refine(isErc20Address, i18n.t('errors.notErc20')),
-    watchedTokenAddress: address.refine(
+    watchedTokenAddress: address.optional().refine(
       a => !a || isErc20Address(a),
       i18n.t('errors.notErc20'),
     ),
