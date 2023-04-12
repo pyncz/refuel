@@ -8,7 +8,7 @@ export const OverlayInput = forwardRef<HTMLInputElement, PropsWithChildren<WithC
   const { className, children, ...attributes } = props
 
   return (
-    <div className="tw-relative tw-h-ui xs:tw-h-14 tw-group/input">
+    <div className="tw-relative tw-h-14 tw-group/input">
       <Input
         {...attributes}
         ref={ref}

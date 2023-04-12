@@ -106,6 +106,9 @@ export default {
       soft: '0.8',
       full: '1',
     },
+    boxShadow: {
+      popup: '0 0 0 1px rgba(var(--border-dim-2), 0.5), 0 0.75rem 1.75rem -1.75rem rgba(var(--color-base), 0.5)',
+    },
     transitionDuration: {
       fast: '150ms',
       normal: '300ms',

@@ -2,8 +2,6 @@ import * as RadixSelect from '@radix-ui/react-select'
 import type { ReactNode } from 'react'
 import { forwardRef } from 'react'
 import classNames from 'classnames'
-import { Icon } from '@iconify-icon/react'
-import selectedIcon from '@iconify/icons-ion/checkmark-outline'
 import type { WithClassName } from '../../../../models'
 
 interface Props<
@@ -47,14 +45,6 @@ export const SelectItem = forwardRef<HTMLDivElement, WithClassName<Props>>((prop
       <RadixSelect.ItemText>
         {render?.(option, { selected }) ?? value}
       </RadixSelect.ItemText>
-      <RadixSelect.ItemIndicator
-        className={classNames(
-          'tw-flex-center tw-duration-fast tw-inline-flex tw-text-7/8 tw-circle-[1.25em] tw-ml-auto tw-text-[rgb(var(--select-option-bg))] group-data-highlighted/option:tw-text-[rgb(var(--select-option-bg--hover))] tw-font-black',
-          'tw-bg-[rgba(var(--select-accent),_var(--tw-text-opacity))] group-data-highlighted/option:tw-bg-[rgba(var(--select-accent--hover),_var(--tw-text-opacity))]',
-        )}
-      >
-        <Icon icon={selectedIcon} />
-      </RadixSelect.ItemIndicator>
     </RadixSelect.Item>
   )
 })

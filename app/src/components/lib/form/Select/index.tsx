@@ -68,7 +68,7 @@ export const Select = forwardRef<HTMLButtonElement, WithClassName<Props>>((props
         ref={ref}
         title={selectedOption ? getTextValue?.(selectedOption) : undefined}
         className={classNames(
-          'tw-group/trigger tw-input tw-pr-[2em] tw-relative child:tw-max-w-full child:tw-inline-flex',
+          'tw-group/trigger tw-p-2 tw--m-2 tw-h-ui tw-flex-center-y tw-inline-flex tw-duration-normal hover:tw-duration-fast tw-rounded tw-pr-[1.75em] tw-relative child:tw-max-w-full child:tw-inline-flex hover:tw-bg-dim-1',
           className,
         )}
         aria-label={ariaLabel}
@@ -80,7 +80,7 @@ export const Select = forwardRef<HTMLButtonElement, WithClassName<Props>>((props
       </RadixSelect.Trigger>
 
       <RadixSelect.Portal>
-        <RadixSelect.Content className="tw-backdrop-blur-sm tw-bg-opacity-soft tw-shadow-sm tw-py-0.5 tw-shadow-popup tw-overflow-hidden tw-bg-[rgba(var(--select-content-bg),_var(--tw-bg-opacity))] tw-rounded-lg tw-text-dim-1 tw-duration-fast tw-border-container">
+        <RadixSelect.Content className="tw-backdrop-blur-sm tw-bg-opacity-20 tw-py-0.5 tw-shadow-popup tw-overflow-hidden tw-bg-[rgba(var(--select-content-bg),_var(--tw-bg-opacity))] tw-rounded-lg tw-text-dim-1 tw-duration-fast">
           <RadixSelect.ScrollUpButton className="tw-w-full tw-text-center tw-duration-fast tw-text-[rgba(var(--select-arrow),_var(--tw-text-opacity))] hover:tw-text-[rgba(var(--select-arrow--hover),_var(--tw-text-opacity))]">
             <Icon icon={chevronUpIcon} />
           </RadixSelect.ScrollUpButton>
