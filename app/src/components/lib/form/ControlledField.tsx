@@ -17,6 +17,7 @@ interface Props<
   }) => ReactNode
   // Field props
   label?: string
+  secondary?: boolean
 }
 
 export const ControlledField = <

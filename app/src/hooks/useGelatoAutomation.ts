@@ -1,16 +1,16 @@
 import { AutomateSDK } from '@gelatonetwork/automate-sdk'
 import type { Signer } from 'ethers'
 import { Contract } from 'ethers'
-import type { Nullable, Optional } from '@voire/type-utils'
 import type { AutomationForm, HexAddress } from '../models'
+import { NATIVE_TOKEN_PLACEHOLDER } from '../consts'
 
 export const useGelatoAutomation = (
-  chainId: Optional<Nullable<number>>,
-  signer: Optional<Nullable<Signer>>,
+  chainId: number | undefined,
+  signer: Signer | undefined | null,
   automationContractAddress: HexAddress,
   resolverContractAddress: HexAddress,
 ) => {
-  const createTask = async (payload: AutomationForm) => {
+  const createTask = async (name: string, payload: AutomationForm) => {
     if (signer && chainId) {
       const automate = new AutomateSDK(chainId, signer)
 
@@ -27,7 +27,7 @@ export const useGelatoAutomation = (
       )
 
       const { taskId, tx } = await automate.createTask({
-        name: `Top up ${payload.watchedTokenAddress} from ${payload.sourceTokenAddress} at ${payload.threshold}`,
+        name,
 
         /* Automated contract */
         execAddress: refuelContract.address,
@@ -41,7 +41,7 @@ export const useGelatoAutomation = (
           await signer.getAddress(), // address _recipient,
           payload.sourceTokenAddress, // address _sourceToken,
           0, // uint256 _sourceMaxAmount,
-          payload.watchedTokenAddress, // address _targetToken,
+          payload.watchedTokenAddress ?? NATIVE_TOKEN_PLACEHOLDER, // address _targetToken,
           payload.replenishmentAmount, // uint256 _targetAmount,
           payload.threshold, // uint256 _threshold
         ]),

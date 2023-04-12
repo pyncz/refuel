@@ -10,10 +10,11 @@ interface Props {
   render: (id: string) => ReactNode
   label?: string
   error?: FieldError
+  secondary?: boolean
 }
 
 export const Field: FC<WithClassName<Props>> = (props) => {
-  const { render, label, error, className } = props
+  const { render, label, error, secondary, className } = props
 
   const id = useId()
   const contextClassNames = 'tw-duration-normal tw-opacity-muted group-hover/field:tw-opacity-soft group-focus-within/field:!tw-opacity-full'
@@ -25,7 +26,7 @@ export const Field: FC<WithClassName<Props>> = (props) => {
           <div className="tw-flex">
             <Label.Root
               htmlFor={id}
-              className={contextClassNames}
+              className={classNames({ 'tw-text-3/4': secondary }, contextClassNames)}
             >{label}</Label.Root>
           </div>
           )

@@ -6,11 +6,10 @@ import { fetchToken } from '@wagmi/core'
 import { useAccount, useToken } from 'wagmi'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ethers } from 'ethers'
 import type { AutomationForm, HexAddress } from '../models'
 import { address, positiveStringifiedNumber } from '../models'
 import { useChain, useIsMounted, useValidValue } from '../hooks'
-import { NATIVE_TOKEN_PLACEHOLDER } from '../consts'
+import { formatAmount } from '../utils'
 import { Button, ControlledField, ErrorMessage, Input } from './lib'
 import { TokenData } from './TokenData'
 import { AmountInput } from './AmountInput'
@@ -51,10 +50,7 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
    */
   const automationFormSchema = z.object({
     sourceTokenAddress: address.refine(isErc20Address, i18n.t('errors.notErc20')),
-    watchedTokenAddress: z.union([
-      address.refine(isErc20Address, i18n.t('errors.notErc20')),
-      z.literal(NATIVE_TOKEN_PLACEHOLDER),
-    ]),
+    watchedTokenAddress: address.refine(isErc20Address, i18n.t('errors.notErc20')).optional(),
     threshold: positiveStringifiedNumber,
     replenishmentAmount: positiveStringifiedNumber,
   })
@@ -105,23 +101,36 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
   })
 
   const targetTokenData = useMemo(() => {
-    return validWatchedTokenAddress && validWatchedTokenAddress !== NATIVE_TOKEN_PLACEHOLDER
+    return validWatchedTokenAddress
       ? targetErc20TokenData // use specified erc20 token
       : chain?.nativeCurrency // use native token
   }, [validWatchedTokenAddress, chain, targetErc20TokenData])
+  const targetTokenDecimals = useMemo(() => targetTokenData?.decimals, [targetTokenData])
+
+  const validThreshold = useValidValue(control, watch, 'threshold')
+  const thresholdInUnits = useMemo(
+    () => formatAmount(validThreshold, targetTokenDecimals),
+    [validThreshold, targetTokenDecimals],
+  )
+
+  const validReplenishmentAmount = useValidValue(control, watch, 'replenishmentAmount')
+  const replenishmentAmountInUnits = useMemo(
+    () => formatAmount(validReplenishmentAmount, targetTokenDecimals),
+    [validReplenishmentAmount, targetTokenDecimals],
+  )
 
   /**
    * On form submitted and the payload is successfully parsed
    */
   const onSubmit = useCallback((payload: AutomationFormParsed) => {
-    if (onFormattedSubmit) {
+    if (onFormattedSubmit && thresholdInUnits && replenishmentAmountInUnits) {
       onFormattedSubmit({
         ...payload,
-        threshold: ethers.utils.parseUnits(payload.threshold.toString()).toString(),
-        replenishmentAmount: ethers.utils.parseUnits(payload.replenishmentAmount.toString()).toString(),
+        threshold: thresholdInUnits,
+        replenishmentAmount: replenishmentAmountInUnits,
       })
     }
-  }, [onFormattedSubmit])
+  }, [onFormattedSubmit, thresholdInUnits, replenishmentAmountInUnits])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="tw-space-y-6">
@@ -145,6 +154,7 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
         <ControlledField<AutomationFormParsed, 'threshold'>
           name="threshold"
           control={control}
+          secondary
           label={i18n.t('form.threshold.label')}
           render={({ id, field }) => (
             <AmountInput
@@ -153,6 +163,7 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
               {...field}
               className="tw-w-full"
               placeholder={i18n.t('form.threshold.placeholder')}
+              subtitle={thresholdInUnits}
             />
           )}
         />
@@ -160,6 +171,7 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
         <ControlledField<AutomationFormParsed, 'replenishmentAmount'>
           name="replenishmentAmount"
           control={control}
+          secondary
           label={i18n.t('form.replenishmentAmount.label')}
           render={({ id, field }) => (
             <AmountInput
@@ -168,6 +180,7 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
               {...field}
               className="tw-w-full"
               placeholder={i18n.t('form.replenishmentAmount.placeholder')}
+              subtitle={replenishmentAmountInUnits}
             />
           )}
         />

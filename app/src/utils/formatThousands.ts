@@ -1,5 +1,3 @@
-import type { BigNumberish } from 'ethers'
-
-export const formatThousands = (value: BigNumberish): string => {
-  return String(value).replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1,')
+export const formatThousands = (value: string): string => {
+  return value.replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1,')
 }
