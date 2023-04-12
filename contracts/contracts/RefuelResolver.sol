@@ -19,6 +19,11 @@ contract RefuelResolver is AnyTokenOperator {
         // exec if we need to replenish the balance
         canExec = balance < _threshold;
 
+        // replenish up to the threshold if only a predefined top-up isn't enough
+        uint256 amountToReplenish = balance + _targetAmount < _threshold
+            ? _threshold - balance
+            : _targetAmount;
+
         // passthrough all the arguments
         execPayload = abi.encodeCall(
             IRefuel.execute,
@@ -27,7 +32,7 @@ contract RefuelResolver is AnyTokenOperator {
                 _sourceToken,
                 _sourceMaxAmount,
                 _targetToken,
-                _targetAmount
+                amountToReplenish
             )
         );
     }
