@@ -8,8 +8,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { AutomationForm, HexAddress } from '../models'
 import { address, positiveStringifiedNumber } from '../models'
-import { useChain, useIsMounted, useValidValue } from '../hooks'
-import { formatAmount } from '../utils'
+import { useAmount, useChain, useIsMounted, useValidValue } from '../hooks'
 import { Button, ControlledField, ErrorMessage } from './lib'
 import { TokenInput } from './TokenInput'
 import { AmountInput } from './AmountInput'
@@ -114,16 +113,16 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
   const targetTokenDecimals = useMemo(() => targetTokenData?.decimals, [targetTokenData])
 
   const validThreshold = useValidValue(control, watch, 'threshold')
-  const thresholdInUnits = useMemo(
-    () => formatAmount(validThreshold, targetTokenDecimals),
-    [validThreshold, targetTokenDecimals],
-  )
+  const {
+    units: thresholdInUnits,
+    formatted: thresholdFormatted,
+  } = useAmount(validThreshold, targetTokenDecimals)
 
   const validReplenishmentAmount = useValidValue(control, watch, 'replenishmentAmount')
-  const replenishmentAmountInUnits = useMemo(
-    () => formatAmount(validReplenishmentAmount, targetTokenDecimals),
-    [validReplenishmentAmount, targetTokenDecimals],
-  )
+  const {
+    units: replenishmentAmountInUnits,
+    formatted: replenishmentAmountFormatted,
+  } = useAmount(validReplenishmentAmount, targetTokenDecimals)
 
   /**
    * On form submitted and the payload is successfully parsed
@@ -177,7 +176,7 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
                 {...field}
                 className="tw-w-full"
                 placeholder={i18n.t('form.threshold.placeholder')}
-                subtitle={thresholdInUnits}
+                subtitle={thresholdFormatted}
               />
             )}
           />
@@ -194,7 +193,7 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
                 {...field}
                 className="tw-w-full"
                 placeholder={i18n.t('form.replenishmentAmount.placeholder')}
-                subtitle={replenishmentAmountInUnits}
+                subtitle={replenishmentAmountFormatted}
               />
             )}
           />
