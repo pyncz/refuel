@@ -10,7 +10,7 @@ export const useGelatoAutomation = (
   automationContractAddress: HexAddress,
   resolverContractAddress: HexAddress,
 ) => {
-  const createTask = async (name: string, payload: AutomationForm) => {
+  const createTask = async (payload: AutomationForm) => {
     if (signer && chainId) {
       const automate = new AutomateSDK(chainId, signer)
 
@@ -27,7 +27,7 @@ export const useGelatoAutomation = (
       )
 
       const { taskId, tx } = await automate.createTask({
-        name,
+        name: payload.name,
 
         /* Automated contract */
         execAddress: refuelContract.address,

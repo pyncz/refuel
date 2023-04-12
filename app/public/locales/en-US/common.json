@@ -42,5 +42,6 @@
     "initialized": "WalletConnect Sign Client is initialized!",
     "initializing": "Initializing WalletConnect Sign Client...",
     "waiting": "WalletConnect Sign Client is not initialized"
-  }
+  },
+  "taskName": "Swap {{value}} from {{source}} if balance < {{at}}"
 }

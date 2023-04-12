@@ -104,10 +104,13 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
   })
 
   const targetTokenData = useMemo(() => {
+    if (!isMounted) {
+      return undefined
+    }
     return validWatchedTokenAddress
       ? targetErc20TokenData // use specified erc20 token
       : chain?.nativeCurrency // use native token
-  }, [validWatchedTokenAddress, chain, targetErc20TokenData])
+  }, [isMounted, validWatchedTokenAddress, chain, targetErc20TokenData])
   const targetTokenDecimals = useMemo(() => targetTokenData?.decimals, [targetTokenData])
 
   const validThreshold = useValidValue(control, watch, 'threshold')
@@ -127,65 +130,75 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
    */
   const onSubmit = useCallback((payload: AutomationFormParsed) => {
     if (onFormattedSubmit && thresholdInUnits && replenishmentAmountInUnits) {
+      // task metadata
+      const taskName = i18n.t('taskName', {
+        value: `${payload.replenishmentAmount}${targetTokenData?.symbol}`,
+        source: `${sourceTokenData?.symbol}`,
+        at: `${payload.threshold}${targetTokenData?.symbol}`,
+      })
+
       onFormattedSubmit({
         ...payload,
+        name: taskName,
         threshold: thresholdInUnits,
         replenishmentAmount: replenishmentAmountInUnits,
       })
     }
-  }, [onFormattedSubmit, thresholdInUnits, replenishmentAmountInUnits])
+  }, [i18n, sourceTokenData, targetTokenData, onFormattedSubmit, thresholdInUnits, replenishmentAmountInUnits])
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="tw-space-y-6">
-      <div className="tw-space-y-4">
-        <ControlledField<AutomationFormParsed, 'watchedTokenAddress'>
-          name="watchedTokenAddress"
-          control={control}
-          label={i18n.t('form.watchedTokenAddress.label')}
-          render={({ id, field }) => (
-            <TokenInput
-              id={id}
-              asset={targetTokenData}
-              {...field}
-              className="tw-w-full"
-              placeholder={i18n.t('form.watchedTokenAddress.placeholder')}
-            />
-          )}
-        />
+    <form onSubmit={handleSubmit(onSubmit)} className="tw-space-y-8">
+      <div className="tw-space-y-6">
+        <div className="tw-space-y-2">
+          <ControlledField<AutomationFormParsed, 'watchedTokenAddress'>
+            name="watchedTokenAddress"
+            control={control}
+            label={i18n.t('form.watchedTokenAddress.label')}
+            render={({ id, field }) => (
+              <TokenInput
+                id={id}
+                asset={targetTokenData}
+                {...field}
+                className="tw-w-full"
+                placeholder={i18n.t('form.watchedTokenAddress.placeholder')}
+              />
+            )}
+          />
 
-        <ControlledField<AutomationFormParsed, 'threshold'>
-          name="threshold"
-          control={control}
-          secondary
-          label={i18n.t('form.threshold.label')}
-          render={({ id, field }) => (
-            <AmountInput
-              id={id}
-              asset={targetTokenData}
-              {...field}
-              className="tw-w-full"
-              placeholder={i18n.t('form.threshold.placeholder')}
-              subtitle={thresholdInUnits}
-            />
-          )}
-        />
+          <ControlledField<AutomationFormParsed, 'threshold'>
+            name="threshold"
+            control={control}
+            secondary
+            label={i18n.t('form.threshold.label')}
+            render={({ id, field }) => (
+              <AmountInput
+                id={id}
+                asset={targetTokenData}
+                {...field}
+                className="tw-w-full"
+                placeholder={i18n.t('form.threshold.placeholder')}
+                subtitle={thresholdInUnits}
+              />
+            )}
+          />
 
-        <ControlledField<AutomationFormParsed, 'replenishmentAmount'>
-          name="replenishmentAmount"
-          control={control}
-          secondary
-          label={i18n.t('form.replenishmentAmount.label')}
-          render={({ id, field }) => (
-            <AmountInput
-              id={id}
-              asset={targetTokenData}
-              {...field}
-              className="tw-w-full"
-              placeholder={i18n.t('form.replenishmentAmount.placeholder')}
-              subtitle={replenishmentAmountInUnits}
-            />
-          )}
-        />
+          <ControlledField<AutomationFormParsed, 'replenishmentAmount'>
+            name="replenishmentAmount"
+            control={control}
+            secondary
+            label={i18n.t('form.replenishmentAmount.label')}
+            render={({ id, field }) => (
+              <AmountInput
+                id={id}
+                asset={targetTokenData}
+                {...field}
+                className="tw-w-full"
+                placeholder={i18n.t('form.replenishmentAmount.placeholder')}
+                subtitle={replenishmentAmountInUnits}
+              />
+            )}
+          />
+        </div>
 
         <ControlledField<AutomationFormParsed, 'sourceTokenAddress'>
           name="sourceTokenAddress"

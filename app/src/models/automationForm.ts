@@ -1,8 +1,17 @@
 import type { HexAddress } from './evmAddress'
 
 export interface AutomationForm {
+  /** Task name */
+  name: string
+
   sourceTokenAddress: HexAddress
+
+  /** `undefined` for a native token */
   watchedTokenAddress?: HexAddress
-  threshold: string // untis
-  replenishmentAmount: string // untis
+
+  /** Untis */
+  threshold: string
+
+  /** Untis */
+  replenishmentAmount: string
 }

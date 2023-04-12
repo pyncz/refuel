@@ -1,4 +1,5 @@
 import plugin from 'tailwindcss/plugin'
+import maskImagePlugin from '@pyncz/tailwind-mask-image'
 import { addButton, addFlexUtils, addHeaders, addInput, addLink, addPopup, addSizeUtils } from './src/tailwind'
 import { co, fill } from './src/tailwind/helpers'
 
@@ -129,6 +130,8 @@ export default {
     },
   },
   plugins: [
+    maskImagePlugin,
+
     plugin(addHeaders),
     plugin(addFlexUtils),
     plugin(addSizeUtils),
