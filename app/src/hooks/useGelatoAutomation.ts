@@ -37,7 +37,7 @@ export const useGelatoAutomation = (
 
         /* Resolver */
         resolverAddress: refuelResolverContract.address,
-        resolverData: refuelContract.interface.encodeFunctionData('checker', [
+        resolverData: refuelResolverContract.interface.encodeFunctionData('checker', [
           await signer.getAddress(), // address _recipient,
           payload.sourceTokenAddress, // address _sourceToken,
           0, // uint256 _sourceMaxAmount,
