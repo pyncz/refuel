@@ -10,8 +10,8 @@ import type { AutomationForm, HexAddress } from '../models'
 import { address, positiveStringifiedNumber } from '../models'
 import { useChain, useIsMounted, useValidValue } from '../hooks'
 import { formatAmount } from '../utils'
-import { Button, ControlledField, ErrorMessage, Input } from './lib'
-import { TokenData } from './TokenData'
+import { Button, ControlledField, ErrorMessage } from './lib'
+import { TokenInput } from './TokenInput'
 import { AmountInput } from './AmountInput'
 
 interface Props {
@@ -50,7 +50,10 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
    */
   const automationFormSchema = z.object({
     sourceTokenAddress: address.refine(isErc20Address, i18n.t('errors.notErc20')),
-    watchedTokenAddress: address.refine(isErc20Address, i18n.t('errors.notErc20')).optional(),
+    watchedTokenAddress: address.refine(
+      a => !a || isErc20Address(a),
+      i18n.t('errors.notErc20'),
+    ),
     threshold: positiveStringifiedNumber,
     replenishmentAmount: positiveStringifiedNumber,
   })
@@ -140,14 +143,13 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
           control={control}
           label={i18n.t('form.watchedTokenAddress.label')}
           render={({ id, field }) => (
-            <TokenData {...targetTokenData}>
-              <Input
-                id={id}
-                {...field}
-                className="tw-w-full"
-                placeholder={i18n.t('form.watchedTokenAddress.placeholder')}
-              />
-            </TokenData>
+            <TokenInput
+              id={id}
+              asset={targetTokenData}
+              {...field}
+              className="tw-w-full"
+              placeholder={i18n.t('form.watchedTokenAddress.placeholder')}
+            />
           )}
         />
 
@@ -190,14 +192,13 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
           control={control}
           label={i18n.t('form.sourceTokenAddress.label')}
           render={({ id, field }) => (
-            <TokenData {...sourceTokenData}>
-              <Input
-                id={id}
-                {...field}
-                className="tw-w-full"
-                placeholder={i18n.t('form.sourceTokenAddress.placeholder')}
-              />
-            </TokenData>
+            <TokenInput
+              id={id}
+              {...field}
+              asset={sourceTokenData}
+              className="tw-w-full"
+              placeholder={i18n.t('form.sourceTokenAddress.placeholder')}
+            />
           )}
         />
       </div>

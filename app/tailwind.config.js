@@ -15,6 +15,12 @@ export default {
   prefix: 'tw-',
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
+    data: {
+      highlighted: 'highlighted',
+      disabled: 'disabled',
+      placeholder: 'placeholder',
+    },
+
     fontSize: {
       'xs': '0.75rem',
       'sm': '0.875rem',
@@ -116,6 +122,8 @@ export default {
       },
       spacing: {
         em: '1em',
+      },
+      height: {
         ui: 'var(--ui-size)',
       },
     },
@@ -134,6 +142,19 @@ export default {
     ({ addVariant }) => {
       addVariant('checked', '&[data-state="checked"]')
       addVariant('child', '& > *')
+    },
+
+    ({ addComponents }) => {
+      addComponents({
+        '.px-ui': {
+          paddingLeft: 'var(--ui-px)',
+          paddingRight: 'var(--ui-px)',
+        },
+        '.py-ui': {
+          paddingTop: 'var(--ui-py)',
+          paddingBottom: 'var(--ui-py)',
+        },
+      })
     },
   ],
 }

@@ -8,7 +8,7 @@ export const TokenSymbol: FC<WithClassName<Props>> = (props) => {
   const { symbol, name, className } = props
 
   return (
-    <div title={name} className={classNames('tw-font-mono tw-text-dim-3', className)}>
+    <div title={name} className={classNames('tw-font-mono', className)}>
       {symbol}
     </div>
   )

@@ -23,7 +23,7 @@ export const SubtitledInput = forwardRef<HTMLInputElement, PropsWithChildren<Wit
         ref={ref}
         className={classNames(
           className,
-          'tw-absolute tw-h-auto !tw-items-start tw-inset-0',
+          'tw-absolute tw-h-auto tw-inset-0',
           { 'xs:tw-pb-5': !!stringSubtitle },
         )}
       />
@@ -31,7 +31,7 @@ export const SubtitledInput = forwardRef<HTMLInputElement, PropsWithChildren<Wit
       {children}
 
       {stringSubtitle
-        ? <small className="tw-hidden xs:tw-block tw-text-dim-3 tw-truncate tw-text-xs tw-absolute tw-inset-x-3 tw-top-8 tw-pointer-events-none">{stringSubtitle}</small>
+        ? <small className="tw-hidden xs:tw-block tw-text-dim-3 tw-truncate tw-text-xs tw-absolute tw-inset-x-0 tw-px-ui tw-top-8 tw-pointer-events-none">{stringSubtitle}</small>
         : null
       }
     </div>

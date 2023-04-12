@@ -22,7 +22,7 @@ export const AmountInput = forwardRef<HTMLInputElement, WithClassName<Props>>((p
       )}
     >
       {asset
-        ? <TokenSymbol {...asset} className="tw-absolute tw-right-3 tw-top-[13px] tw-pointer-events-none" />
+        ? <TokenSymbol {...asset} className="tw-text-dim-3 tw-absolute tw-right-0 tw-px-ui tw-pl-px tw-top-[13px] tw-pointer-events-none" />
         : null
       }
     </SubtitledInput>
