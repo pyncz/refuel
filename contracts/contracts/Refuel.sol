@@ -10,13 +10,34 @@ import "./utils/gelato/AutomateReady.sol";
 import "./utils/IRefuel.sol";
 import "./utils/IWETH.sol";
 
+/**
+ * @title Refuel balance by swapping from another token
+ * @author Pau Yankovski <https://github.com/pyncz>
+ * @notice Replenish balance of an erc20 or the native token by swapping from the erc20 token of your choice
+ */
 contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
+    /**
+     * @notice Address which is the owner of the contract
+     */
     address payable public owner;
 
+    /**
+     * @notice Address which is the owner of the contract
+     * @dev Used as the intermediate currency in case of swapping into the native token
+     */
     address public immutable WETH;
+
+    /**
+     * @notice Address of the Uniswap v3 SwapRouter
+     * See https://github.com/Uniswap/v3-periphery/blob/main/deploys.md
+     */
     ISwapRouter public immutable swapRouter;
 
-    // 500 (0.05%) / 3000 (0.3%) / 10000 (1%)
+    /**
+     * @notice Pool fee
+     * @dev aka Tier.
+     * Available values are 500 (0.05%) / 3000 (0.3%) / 10000 (1%)
+     */
     uint24 public constant poolFee = 3000;
 
     constructor(
@@ -29,14 +50,16 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
         WETH = _wethAddress;
     }
 
-    /// @notice execute swaps a minimum possible amount of the source token for a fixed amount of the target token.
-    /// @dev The calling address must approve this contract to spend at least `_amount` worth of the source token for this function to succeed.
-    /// @param _recipient Address of the user account. We don't use msg.sender as sender will be the gelato automation contract
-    /// @param _sourceToken The address of the source token
-    /// @param _sourceAmountMax Max amount of the source token to exchange
-    /// @param _targetToken The address of the target token
-    /// @param _targetAmount The exact amount of the target token to receive
-    /// @return amountSpent The amount of the source token spent
+    /**
+     * @notice Swap from the source token to the token to replenish, and pay Gelato automation fee
+     * @dev The `_recipient` address must approve this contract to spend at least `_sourceAmountMax` worth of the source token for this function to succeed.
+     * @param _recipient Address of the user account. We don't use msg.sender as sender will be the gelato automation contract
+     * @param _sourceToken The address of the source token
+     * @param _sourceAmountMax Max amount of the source token to exchange. If 0 is provided, tokenSupply will be used
+     * @param _targetToken The address of the target token. Use `0xEee...EEeE` placeholder for the native token
+     * @param _targetAmount The exact amount of the target token to replenish
+     * @return amountSpent The amount of the source token spent
+     */
     function execute(
         address _recipient,
         address _sourceToken,
@@ -48,7 +71,6 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
         onlyDedicatedMsgSender(_recipient)
         returns (uint256 amountSpent)
     {
-        // NOTE:
         // - _recipient must approve this contract
         // - Let's assume we checked that the balance needs to be replenished via the resolver
 
@@ -70,11 +92,7 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
             _targetAmount
         );
 
-        /**
-         * Pay gelato for automation
-         */
-        // NOTE: Only native network token is available for now
-        // @see https://docs.gelato.network/developer-services/automate/paying-for-your-transactions
+        // Pay gelato for automation
         (uint256 gelatoFee, address gelatoFeeToken) = _getFeeDetails();
 
         uint256 amountSpentOnGelatoFee = swapExactOutput(
@@ -90,6 +108,18 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
         amountSpent = amountSpentOnSwap + amountSpentOnGelatoFee;
     }
 
+    /**
+     * @notice Swaps a minimum possible amount of the source token for a fixed amount of the target token.
+     * @dev Sponsor and recipient are separated params so we can use this method for paying Gelato fee having `feeToken` swapped from the source token as well
+     * @dev We don't use msg.sender as sender will be the gelato automation contract
+     * @param _sponsor Address of the account.
+     * @param _recipient Address of the account who receives the swapped assets
+     * @param _sourceToken The address of the source token
+     * @param _sourceAmountMax Max amount of the source token to exchange. If 0 is provided, tokenSupply will be used
+     * @param _targetToken The address of the target token. Use `0xEee...EEeE` placeholder for the native token
+     * @param _targetAmount The exact amount of the target token for recipient to receive
+     * @return amountSpent The amount of the source token spent
+     */
     function swapExactOutput(
         address _sponsor,
         address _recipient,
@@ -185,6 +215,12 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
         }
     }
 
+    /**
+     * @notice Get available amount of the token owned by address
+     * @param _holder Address of the owner of the token whose balance is checked
+     * @param _token Address of the checked token. Use `0xEee...EEeE` placeholder for the native token
+     * @param _maxAmount Max amount to return. Will be returned if the balance is greater
+     */
     function _getAvailableAmount(
         address _holder,
         address _token,
