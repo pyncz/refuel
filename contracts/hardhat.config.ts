@@ -10,8 +10,14 @@ import '@nomicfoundation/hardhat-toolbox'
 dotEnvConfig({ debug: true })
 
 const deployer = requireEnv('DEPLOYER_PRIVATE_KEY', process.env.DEPLOYER_PRIVATE_KEY)
+const testAccount = process.env.TEST_ACCOUNT_PRIVATE_KEY
 const goerliRpcUrl = requireEnv('GOERLI_RPC_URL', process.env.GOERLI_RPC_URL)
 const mainnetRpcUrl = requireEnv('MAINNET_RPC_URL', process.env.MAINNET_RPC_URL)
+
+const devDeployerAccountConfig = {
+  privateKey: deployer,
+  balance: '1000000000000000000', // 1 eth
+}
 
 const config: HardhatUserConfig = {
   solidity: '0.8.18',
@@ -23,17 +29,27 @@ const config: HardhatUserConfig = {
       forking: {
         // Fork mainnet
         url: mainnetRpcUrl,
+        blockNumber: 17040137,
       },
+      accounts: testAccount
+        ? [
+            devDeployerAccountConfig,
+            {
+              privateKey: testAccount,
+              balance: '100000000000000000', // 0.1 eth
+            },
+          ]
+        : [devDeployerAccountConfig],
     },
     goerli: {
       chainId: 5,
       url: goerliRpcUrl,
-      accounts: [deployer],
+      accounts: testAccount ? [deployer, testAccount] : [deployer],
     },
     mainnet: {
       chainId: 1,
       url: mainnetRpcUrl,
-      accounts: [deployer],
+      accounts: testAccount ? [deployer, testAccount] : [deployer],
     },
   },
 }
