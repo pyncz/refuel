@@ -64,6 +64,7 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
     handleSubmit,
     control,
     watch,
+    setError,
     reset: resetForm,
     formState: { errors },
   } = useForm<AutomationFormParsed>({
@@ -138,18 +139,25 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
         at: `${payload.threshold}${targetTokenData?.symbol}`,
       })
 
-      await onFormattedSubmit({
-        ...payload,
-        name: taskName,
-        threshold: thresholdInUnits,
-        replenishmentAmount: replenishmentAmountInUnits,
-      })
+      try {
+        await onFormattedSubmit({
+          ...payload,
+          name: taskName,
+          threshold: thresholdInUnits,
+          replenishmentAmount: replenishmentAmountInUnits,
+        })
 
-      resetForm()
+        resetForm()
+      } catch (e) {
+        setError('root', {
+          message: (e as Error)?.message ?? i18n.t('errors.unexpected'),
+        })
+      }
     }
   }, [
     i18n,
     resetForm,
+    setError,
     sourceTokenData,
     targetTokenData,
     onFormattedSubmit,
