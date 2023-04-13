@@ -5,9 +5,9 @@
 export const getWethAddress = (network: string): string => {
   switch (network) {
     case 'hardhat':
+    case 'localhost':
     case 'mainnet':
       return '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
-    case 'localhost':
     case 'goerli':
       return '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6'
   }

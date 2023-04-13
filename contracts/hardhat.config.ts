@@ -36,7 +36,7 @@ const config: HardhatUserConfig = {
             devDeployerAccountConfig,
             {
               privateKey: testAccount,
-              balance: '100000000000000000', // 0.1 eth
+              balance: '1000000000000000000', // 1 eth
             },
           ]
         : [devDeployerAccountConfig],
