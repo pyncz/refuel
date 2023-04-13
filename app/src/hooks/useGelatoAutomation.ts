@@ -3,7 +3,7 @@ import type { Signer } from 'ethers'
 import { Contract } from 'ethers'
 import { useMemo } from 'react'
 import type { AutomationForm, HexAddress } from '../models'
-import { NATIVE_TOKEN_PLACEHOLDER } from '../consts'
+import { NATIVE_TOKEN_PLACEHOLDER, erc20Abi } from '../../../consts'
 
 export const useGelatoAutomation = (
   chainId: number | undefined,
@@ -20,7 +20,7 @@ export const useGelatoAutomation = (
     if (signer && automate) {
       const sourceToken = new Contract(
         payload.sourceTokenAddress,
-        'approve(address spender, uint256 amount)',
+        erc20Abi,
         signer,
       )
 
