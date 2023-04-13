@@ -6,6 +6,7 @@ import { fetchToken } from '@wagmi/core'
 import { useAccount, useToken } from 'wagmi'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import type { MaybePromise } from '@voire/type-utils'
 import type { AutomationForm, HexAddress } from '../models'
 import { address, positiveStringifiedNumber } from '../models'
 import { useAmount, useChain, useIsMounted, useValidValue } from '../hooks'
@@ -15,7 +16,7 @@ import { AmountInput } from './AmountInput'
 
 interface Props {
   chainId?: number
-  onSubmit?: (form: AutomationForm) => void
+  onSubmit?: (form: AutomationForm) => MaybePromise<void>
 }
 
 export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
@@ -63,6 +64,7 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
     handleSubmit,
     control,
     watch,
+    reset: resetForm,
     formState: { errors },
   } = useForm<AutomationFormParsed>({
     /**
@@ -127,7 +129,7 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
   /**
    * On form submitted and the payload is successfully parsed
    */
-  const onSubmit = useCallback((payload: AutomationFormParsed) => {
+  const onSubmit = useCallback(async (payload: AutomationFormParsed) => {
     if (onFormattedSubmit && thresholdInUnits && replenishmentAmountInUnits) {
       // task metadata
       const taskName = i18n.t('taskName', {
@@ -136,14 +138,24 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
         at: `${payload.threshold}${targetTokenData?.symbol}`,
       })
 
-      onFormattedSubmit({
+      await onFormattedSubmit({
         ...payload,
         name: taskName,
         threshold: thresholdInUnits,
         replenishmentAmount: replenishmentAmountInUnits,
       })
+
+      resetForm()
     }
-  }, [i18n, sourceTokenData, targetTokenData, onFormattedSubmit, thresholdInUnits, replenishmentAmountInUnits])
+  }, [
+    i18n,
+    resetForm,
+    sourceTokenData,
+    targetTokenData,
+    onFormattedSubmit,
+    thresholdInUnits,
+    replenishmentAmountInUnits,
+  ])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="tw-space-y-8">
