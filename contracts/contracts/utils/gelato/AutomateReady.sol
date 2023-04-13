@@ -23,16 +23,18 @@ abstract contract AutomateReady is AnyTokenOperator {
     }
 
     /**
-     * @dev
-     * Only tasks created by the provided _taskCreator
-     * can call the functions with this modifier.
+     * @dev Only tasks created by the provided _taskCreator
+     * or the _taskCreator himself can call the functions with this modifier.
      */
     modifier onlyDedicatedMsgSender(address _taskCreator) {
         // Get who will be a sender for the tasks created by the account
         (address dedicatedMsgSender, ) = IOpsProxyFactory(OPS_PROXY_FACTORY)
             .getProxyOf(_taskCreator);
 
-        require(msg.sender == dedicatedMsgSender, "Only dedicated msg.sender");
+        require(
+            msg.sender == dedicatedMsgSender || msg.sender == _taskCreator,
+            "Only dedicated msg.sender"
+        );
         _;
     }
 
