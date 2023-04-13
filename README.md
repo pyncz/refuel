@@ -22,7 +22,7 @@ So, you need to top up your balance through a bridge with another network or, ev
 
 ### The Solution
 
-With **`refuel`** you won't have to worry about your balance anymore! When the balance is about to run out, `refuel` will replenish it by swapping the required amount of a token of your choice.
+With **`refuel`** you won't have to worry about your balance anymore! When the balance is about to run out, `refuel` will replenish it by swapping the required amount of the token of your choice.
 
 
 ### Okay, but what's going on exactly?

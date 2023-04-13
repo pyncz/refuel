@@ -36,7 +36,7 @@
   "logo": "{{name}} logo",
   "pages": {
     "index": {
-      "description": "Don't let your account run out of fuel! Replenish your crypto assets' balance automatically by swapping ERC20 token of your choice",
+      "description": "Don't let your account run out of fuel! Replenish your crypto assets' balance automatically by swapping the ERC20 token of your choice",
       "title": "refuel"
     }
   },
