@@ -1,12 +1,12 @@
 import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAccount, useConnect, useNetwork, useSigner, useSwitchNetwork } from 'wagmi'
 import classNames from 'classnames'
 import i18nextConfig from '../../next-i18next.config'
-import { Button, ChainRepresentation, ClientOnly, ConnectionStatus, CreateTaskForm, ErrorMessage, Field, HeadMeta, LogoLink, Select, Spinner } from '../components'
-import type { Chain } from '../models'
+import { Button, Card, ChainRepresentation, ClientOnly, ConnectionStatus, CreateTaskForm, ErrorMessage, Field, GelatoTask, HeadMeta, LogoLink, Select, Spinner } from '../components'
+import type { Chain, Task } from '../models'
 import { useChains, useGelatoAutomation, useIsMounted } from '../hooks'
 import { env } from '../env/client.mjs'
 
@@ -52,12 +52,22 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = () => {
 
   const { data: signer } = useSigner({ chainId })
 
-  const { createTask } = useGelatoAutomation(
-    chainId,
+  const { automate, createTask } = useGelatoAutomation(
+    currentChain?.id,
     signer,
     env.NEXT_PUBLIC_AUTOMATED_CONTRACT_ADDRESS,
     env.NEXT_PUBLIC_RESOLVER_CONTRACT_ADDRESS,
   )
+
+  const [activeTasks, setActiveTasks] = useState<Task[]>()
+  useEffect(() => {
+    const fetchData = async () => {
+      if (automate) {
+        setActiveTasks(await automate.getActiveTasks())
+      }
+    }
+    fetchData()
+  }, [automate])
 
   return (
     <>
@@ -73,11 +83,11 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = () => {
         </div>
       </div>
 
-      <div className="sm:tw-flex-1 tw-flex-center tw-flex-col tw-gap-4">
-        <div className={classNames(
-          'tw-space-y-6 tw-rounded-lg sm:tw-rounded-xl tw-bg-dim-1 tw-p-6 sm:tw-p-8 tw-mx-auto tw-w-full tw-max-w-md tw-relative tw-bg-opacity-muted',
+      <div className="sm:tw-flex-1 tw-flex-center tw-flex-col tw-gap-4 tw-w-full tw-max-w-md tw-mx-auto">
+        <Card className={classNames(
+          'tw-space-y-6',
+          'after:tw-mask-to-20 after:tw-mask-radial after:tw-mask-at-t after:tw-mask-reach-cover',
           'before:tw-blur-md before:tw-z-muted before:tw-absolute before:tw-inset-0 before:tw-bg-[radial-gradient(50%_50%_at_50%_70%,_rgba(var(--accent-primary),_0.4),_rgba(var(--accent-primary),_0))]',
-          'after:tw-pointer-events-none after:tw-absolute after:tw-rounded-lg sm:after:tw-rounded-xl after:tw-mask-to-20 after:tw-inset-0 after:tw-mask-radial after:tw-mask-at-t after:tw-mask-reach-cover after:tw-border after:tw-border-dim-2',
         )}
         >
           <ClientOnly>
@@ -101,30 +111,51 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = () => {
             />
           </ClientOnly>
 
-          <CreateTaskForm chainId={chainId} onSubmit={form => createTask(form)}>
+          <CreateTaskForm
+            chainId={chainId}
+            onSubmit={async (form) => {
+              await createTask(form)
+            }}
+          >
             <div className="tw-space-y-6">
               {error ? <ErrorMessage error={error} /> : null}
-              <div className="tw-space-y-2">
-                {connectors.map(connector => (
-                  <Button
-                    appearance="secondary"
-                    type="button"
-                    className="tw-w-full"
-                    disabled={!isMounted || !connector.ready}
-                    key={connector.id}
-                    iconRight={isLoading && pendingConnector?.id === connector.id
-                      ? <Spinner />
-                      : null
-                  }
-                    onClick={() => connect({ connector, chainId })}
-                  >
-                    {connector.name}
-                  </Button>
-                ))}
-              </div>
+              <ClientOnly>
+                <div className="tw-space-y-2">
+                  {connectors.map(connector => (
+                    <Button
+                      appearance="secondary"
+                      type="button"
+                      className="tw-w-full"
+                      disabled={!isMounted || !connector.ready}
+                      key={connector.id}
+                      iconRight={isLoading && pendingConnector?.id === connector.id
+                        ? <Spinner />
+                        : null
+                      }
+                      onClick={() => connect({ connector, chainId })}
+                    >
+                      {connector.name}
+                    </Button>
+                  ))}
+                </div>
+              </ClientOnly>
             </div>
           </CreateTaskForm>
-        </div>
+        </Card>
+
+        {activeTasks?.length
+          ? (
+            <div className="tw-space-y-2 tw-w-full">
+              <h6 className="tw-mt-2 tw-text-dim-3 tw-uppercase">{i18n.t('activeTasks')}</h6>
+              <div className="tw-space-y-4">
+                {activeTasks?.map(task => (
+                  <GelatoTask key={task.taskId} {...task} chainId={currentChain?.id} />
+                )) ?? null}
+              </div>
+            </div>
+            )
+          : null
+        }
       </div>
     </>
   )

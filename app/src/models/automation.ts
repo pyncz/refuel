@@ -15,3 +15,5 @@ export interface AutomationForm {
   /** Untis */
   replenishmentAmount: string
 }
+
+export type { Task } from '@gelatonetwork/automate-sdk'

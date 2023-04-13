@@ -10,6 +10,8 @@ export * from './CreateTaskForm'
 export * from './ConnectionStatus'
 export * from './LogoLink'
 export * from './TokenSymbol'
+export * from './GelatoTask'
+export * from './Card'
 
 export * from './OverlayInput'
 export * from './SubtitledInput'
