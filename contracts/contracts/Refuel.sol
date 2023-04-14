@@ -94,6 +94,10 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
 
         // Pay gelato for automation
         (uint256 gelatoFee, address gelatoFeeToken) = _getFeeDetails();
+        // If zero address is provided, pay with native token by default
+        address safeGelatoFeeToken = gelatoFeeToken == address(0)
+            ? NATIVE
+            : gelatoFeeToken;
 
         uint256 amountSpentOnGelatoFee = swapExactOutput(
             _recipient,
@@ -101,7 +105,7 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
             _sourceToken,
             // Remainder of the max allowed balance to spend after the main swap
             sourceAmountMax - amountSpentOnSwap,
-            gelatoFeeToken,
+            safeGelatoFeeToken,
             gelatoFee
         );
 
