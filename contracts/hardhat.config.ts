@@ -16,7 +16,7 @@ const mainnetRpcUrl = requireEnv('MAINNET_RPC_URL', process.env.MAINNET_RPC_URL)
 
 const devDeployerAccountConfig = {
   privateKey: deployer,
-  balance: '1000000000000000000', // 1 eth
+  balance: '10000000000000000000', // 10 eth
 }
 
 const config: HardhatUserConfig = {
@@ -36,7 +36,7 @@ const config: HardhatUserConfig = {
             devDeployerAccountConfig,
             {
               privateKey: testAccount,
-              balance: '1000000000000000000', // 1 eth
+              balance: '10000000000000000000', // 10 eth
             },
           ]
         : [devDeployerAccountConfig],
