@@ -36,7 +36,7 @@ describe('Refuel', () => {
 
     // swap for some erc20 tokens
     const _swapRouter = new Contract(swapRouterAddress, swapRouterAbi)
-    const ethersToSpend = ethers.utils.parseEther('0.2')
+    const ethersToSpend = ethers.utils.parseEther('1.0')
 
     for (const account of [owner, testAccount]) {
       // swap for erc20

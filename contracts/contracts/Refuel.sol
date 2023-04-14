@@ -74,6 +74,8 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
         // - _recipient must approve this contract
         // - Let's assume we checked that the balance needs to be replenished via the resolver
 
+        require(_targetAmount > 0, "Amount to replenish cannot be 0!");
+
         uint256 sourceAmountMax = _getAvailableAmount(
             _recipient,
             _sourceToken,
@@ -143,6 +145,10 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
             _sourceToken != _targetToken,
             "Source and target tokens cannot be the same!"
         );
+
+        if (_targetAmount <= 0) {
+            return 0;
+        }
 
         // Use the whole balance as the max amount if it's not specified explicitly
         // (unused amount will be refunded anyway)
