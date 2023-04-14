@@ -19,7 +19,7 @@ abstract contract AutomateReady is AnyTokenOperator {
 
     constructor(address _automate) {
         automate = IAutomate(_automate);
-        _gelato = IAutomate(_automate).gelato();
+        _gelato = automate.gelato();
     }
 
     /**

@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import hre, { ethers } from 'hardhat'
-import { deployContract, getGelatoAutomateAddress, getWethAddress, setAppEnv } from '../utils'
+import { deployContract, getGelatoAutomateAddress, getWeth9Address, setAppEnv } from '../utils'
 import { requireEnv } from '../../utils'
 
 const main = async () => {
@@ -12,8 +12,8 @@ const main = async () => {
   const swapRouterAddress = requireEnv('SWAP_ROUTER_ADDRESS', process.env.SWAP_ROUTER_ADDRESS)
   console.log(`SwapRouter address is ${swapRouterAddress}`)
 
-  const wethAddress = getWethAddress(networkName)
-  console.log(`WETH address is ${wethAddress}`)
+  const weth9Address = getWeth9Address(networkName)
+  console.log(`WETH9 address is ${weth9Address}`)
 
   const automateAddress = getGelatoAutomateAddress(networkName)
   console.log(`Gelato Automate address is ${automateAddress}`)
@@ -31,7 +31,7 @@ const main = async () => {
     ethers.getContractFactory('Refuel'),
     swapRouterAddress,
     automateAddress,
-    wethAddress,
+    weth9Address,
   )
   setAppEnv('NEXT_PUBLIC_AUTOMATED_CONTRACT_ADDRESS', refuel.address)
 

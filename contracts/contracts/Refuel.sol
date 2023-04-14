@@ -8,7 +8,7 @@ import "@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol";
 import "./utils/AnyTokenOperator.sol";
 import "./utils/gelato/AutomateReady.sol";
 import "./utils/IRefuel.sol";
-import "./utils/IWETH.sol";
+import "./utils/IWETH9.sol";
 
 /**
  * @title Refuel balance by swapping from another token
@@ -23,9 +23,9 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
 
     /**
      * @notice Address which is the owner of the contract
-     * @dev Used as the intermediate currency in case of swapping into the native token
+     * @dev Used as the intermediate currency in case of swapping for a native token
      */
-    address public immutable WETH;
+    IWETH9 public immutable WETH9;
 
     /**
      * @notice Address of the Uniswap v3 SwapRouter
@@ -43,11 +43,11 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
     constructor(
         ISwapRouter _swapRouter,
         address _automate,
-        address _wethAddress
+        IWETH9 _weth9Address
     ) AutomateReady(_automate) {
         owner = payable(msg.sender);
         swapRouter = _swapRouter;
-        WETH = _wethAddress;
+        WETH9 = _weth9Address;
     }
 
     /**
@@ -173,11 +173,14 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
         );
 
         /**
-         * If it's a swap into a native token...
+         * If it's a swap for a native token...
          */
         bool isTargetNative = _isNative(_targetToken);
-        // - Use WETH, and then unwrap
-        address targetTokenAddress = isTargetNative ? WETH : _targetToken;
+        // - Use WETH9, and then unwrap
+        address targetTokenAddress = isTargetNative
+            ? address(WETH9)
+            : _targetToken;
+
         // - Use this contract as a recipient first to re-transfer unwrapped to the target _recipient afterwards
         address recipientAddress = isTargetNative ? address(this) : _recipient;
 
@@ -197,10 +200,10 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
         // in order to receive the desired _targetAmount.
         amountSpent = swapRouter.exactOutputSingle(params);
 
-        // If it's a swap into a native token...
+        // If it's a swap for a native token...
         if (isTargetNative) {
             // - unwrap received amount of the wrapped native token
-            IWETH(WETH).withdraw(_targetAmount);
+            WETH9.withdraw(_targetAmount);
             // - re-transfer unwrapped native token to the target _recipient
             TransferHelper.safeTransferETH(_recipient, _targetAmount);
         }

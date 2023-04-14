@@ -1,4 +1,4 @@
 export * from './deployContract'
 export * from './setAppEnv'
-export * from './getWethAddress'
+export * from './getWeth9Address'
 export * from './getGelatoAutomateAddress'
