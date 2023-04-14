@@ -231,4 +231,6 @@ contract Refuel is IRefuel, AnyTokenOperator, AutomateReady {
             ? _maxAmount
             : balance;
     }
+
+    receive() external payable {}
 }
