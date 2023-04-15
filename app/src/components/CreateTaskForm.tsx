@@ -10,6 +10,7 @@ import type { MaybePromise } from '@voire/type-utils'
 import type { AutomationForm, HexAddress } from '../models'
 import { address, positiveStringifiedNumber } from '../models'
 import { useAmount, useChain, useIsMounted, useValidValue } from '../hooks'
+import { isHexAddress } from '../utils'
 import { Button, ControlledField, ErrorMessage } from './lib'
 import { TokenInput } from './TokenInput'
 import { AmountInput } from './AmountInput'
@@ -50,13 +51,25 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
    */
   const automationFormSchema = z.object({
     sourceTokenAddress: address.refine(isErc20Address, i18n.t('errors.notErc20')),
-    watchedTokenAddress: address.optional().refine(
-      a => !a || isErc20Address(a),
-      i18n.t('errors.notErc20'),
-    ),
+    watchedTokenAddress: z.custom<HexAddress>()
+      .optional()
+      .refine(
+        a => !a || isHexAddress(a),
+        'Should be a hex address',
+      )
+      .refine(
+        a => !a || isErc20Address(a as HexAddress),
+        i18n.t('errors.notErc20'),
+      ),
     threshold: positiveStringifiedNumber,
     replenishmentAmount: positiveStringifiedNumber,
-  })
+  }).refine(
+    data => data.sourceTokenAddress !== data.watchedTokenAddress,
+    {
+      message: i18n.t('errors.sameToken'),
+      path: ['sourceTokenAddress'],
+    },
+  )
 
   type AutomationFormParsed = z.infer<typeof automationFormSchema>
 
@@ -75,6 +88,8 @@ export const CreateTaskForm: FC<PropsWithChildren<Props>> = (props) => {
     resolver: zodResolver(automationFormSchema, { async: true }),
 
     defaultValues: {
+      watchedTokenAddress: '' as HexAddress,
+      sourceTokenAddress: '' as HexAddress,
       threshold: 0.1,
       replenishmentAmount: 0.1,
     },

@@ -9,6 +9,7 @@
   "errors": {
     "notErc20": "Not an ERC20 contract address!",
     "notFound": "Not found",
+    "sameToken": "Source and target tokens cannot be the same!",
     "unexpected": "Unexpected error has occured!"
   },
   "form": {

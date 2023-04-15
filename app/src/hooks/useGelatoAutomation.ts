@@ -59,7 +59,7 @@ export const useGelatoAutomation = (
             await signer.getAddress(), // address _recipient,
             payload.sourceTokenAddress, // address _sourceToken,
             0, // uint256 _sourceMaxAmount,
-            payload.watchedTokenAddress ?? NATIVE_TOKEN_PLACEHOLDER, // address _targetToken,
+            payload.watchedTokenAddress || NATIVE_TOKEN_PLACEHOLDER, // address _targetToken,
             payload.replenishmentAmount, // uint256 _targetAmount,
             payload.threshold, // uint256 _threshold
           ]),
